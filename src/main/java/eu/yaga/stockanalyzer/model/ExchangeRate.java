@@ -14,6 +14,12 @@ public class ExchangeRate {
     private String date;
     private double close;
 
+    public ExchangeRate(String symbol, String date, double close) {
+        this.symbol = symbol;
+        this.date = date;
+        this.close = close;
+    }
+
     public String getSymbol() {
         return symbol;
     }

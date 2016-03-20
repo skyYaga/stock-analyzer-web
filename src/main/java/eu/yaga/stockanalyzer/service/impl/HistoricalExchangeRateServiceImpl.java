@@ -5,6 +5,7 @@ import eu.yaga.stockanalyzer.model.YqlQuery;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
@@ -21,7 +22,16 @@ public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRate
 
     private static final Logger log = LoggerFactory.getLogger(HistoricalExchangeRateServiceImpl.class);
 
+    static final String YQL_BASE_URL = "https://query.yahooapis.com/v1/public/yql";
+    static final String YQL_QUERY_POSTFIX = "&format=json&env=store://datatables.org/alltableswithkeys";
+    static final String YQL_QUERY_HISTORICAL_RATES =
+            "?q=select * from yahoo.finance.historicaldata where symbol = '%s' and startDate = '%s' and endDate = '%s'";
+
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /**
      * This method returns historical exchange Rates of the given stock
@@ -33,7 +43,6 @@ public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRate
      */
     @Override
     public List<ExchangeRate> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException {
-        RestTemplate restTemplate = new RestTemplate();
 
         // Create default values
         Date dateTo = new Date();
@@ -50,15 +59,16 @@ public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRate
             dateFrom = sdf.parse(dateStringFrom);
         }
 
+        if (dateFrom.equals(dateTo)) {
+            throw new RuntimeException("The dates may not be equal!");
+        }
+        if (dateFrom.after(dateTo)) {
+            throw new RuntimeException("The from date has to be before the to date!");
+        }
 
-        String baseUrl = "https://query.yahooapis.com/v1/public/yql";
+        String queryString = String.format(YQL_QUERY_HISTORICAL_RATES, symbol, sdf.format(dateFrom), sdf.format(dateTo));
 
-        String queryString = "?q=select * from yahoo.finance.historicaldata where symbol = '" + symbol +
-                "' and startDate = '" + sdf.format(dateFrom) + "' and endDate = '" + sdf.format(dateTo) + "'";
-        String formatString = "&format=json";
-        String envString = "&env=store://datatables.org/alltableswithkeys";
-
-        YqlQuery queryResult = restTemplate.getForObject(baseUrl + queryString + formatString + envString, YqlQuery.class);
+        YqlQuery queryResult = restTemplate.getForObject(YQL_BASE_URL + queryString + YQL_QUERY_POSTFIX, YqlQuery.class);
         log.info(queryResult.toString());
 
         return queryResult.getQuery().getResults().getQuote();

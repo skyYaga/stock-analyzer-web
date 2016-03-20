@@ -3,9 +3,7 @@ package eu.yaga.stockanalyzer.controller;
 import eu.yaga.stockanalyzer.model.ExchangeRate;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
@@ -15,7 +13,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * REST Controller for exchange rates
  */
 @RestController
-public class ExchangeRateController {
+@RequestMapping("/exchange-rate")
+class ExchangeRateController {
 
     @Autowired
     private HistoricalExchangeRateService historicalExchangeRateService;
@@ -32,9 +31,9 @@ public class ExchangeRateController {
      * @return a list of historical exchange rates
      * @throws ParseException if a submitted date is invalid
      */
-    @RequestMapping("/exchange-rate")
+    @RequestMapping(value = "/{symbol}", method = RequestMethod.GET)
     public List<ExchangeRate> getExchangeRateForRange(
-            @RequestParam(value = "symbol") String symbol,
+            @PathVariable String symbol,
             @RequestParam(value = "from", required = false) String dateStringFrom,
             @RequestParam(value = "to", required = false) String dateStringTo
     ) throws ParseException {
