@@ -1,6 +1,6 @@
 package eu.yaga.stockanalyzer.service;
 
-import eu.yaga.stockanalyzer.model.ExchangeRate;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -20,5 +20,5 @@ public interface HistoricalExchangeRateService {
      * @param dateStringTo     Date of the end of the historical data (yyyy-MM-dd)
      * @return Historical Exchange Rates
      */
-    List<ExchangeRate> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException;
+    List<HistoricalDataQuote> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException;
 }

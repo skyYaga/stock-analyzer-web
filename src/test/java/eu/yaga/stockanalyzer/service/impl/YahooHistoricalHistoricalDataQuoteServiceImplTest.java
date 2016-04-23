@@ -1,10 +1,10 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.Application;
-import eu.yaga.stockanalyzer.model.ExchangeRate;
-import eu.yaga.stockanalyzer.model.Query;
-import eu.yaga.stockanalyzer.model.Results;
-import eu.yaga.stockanalyzer.model.YqlQuery;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuery;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataResults;
+import eu.yaga.stockanalyzer.model.historicaldata.YqlHistoricalDataQuery;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,17 +25,17 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for the {@link HistoricalExchangeRateServiceImpl}
+ * Tests for the {@link YahooHistoricalExchangeRateServiceImpl}
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-public class HistoricalExchangeRateServiceImplTest {
+public class YahooHistoricalHistoricalDataQuoteServiceImplTest {
 
     private String symbol = "AAPL";
-    private static final String YQL_BASE_URL = HistoricalExchangeRateServiceImpl.YQL_BASE_URL;
-    private static final String YQL_QUERY_POSTFIX = HistoricalExchangeRateServiceImpl.YQL_QUERY_POSTFIX;
-    private static final String YQL_QUERY_HISTORICAL_RATES = HistoricalExchangeRateServiceImpl.YQL_QUERY_HISTORICAL_RATES;
+    private static final String YQL_BASE_URL = YahooHistoricalExchangeRateServiceImpl.YQL_BASE_URL;
+    private static final String YQL_QUERY_POSTFIX = YahooHistoricalExchangeRateServiceImpl.YQL_QUERY_POSTFIX;
+    private static final String YQL_QUERY_HISTORICAL_RATES = YahooHistoricalExchangeRateServiceImpl.YQL_QUERY_HISTORICAL_RATES;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     private Calendar calendar = GregorianCalendar.getInstance();
@@ -44,7 +44,7 @@ public class HistoricalExchangeRateServiceImplTest {
     private RestTemplate restTemplate;
 
     @InjectMocks
-    private HistoricalExchangeRateService service = new HistoricalExchangeRateServiceImpl();
+    private HistoricalExchangeRateService service = new YahooHistoricalExchangeRateServiceImpl();
 
     @Before
     public void init() {
@@ -60,9 +60,9 @@ public class HistoricalExchangeRateServiceImplTest {
 
         when(restTemplate.getForObject(
                 eq(YQL_BASE_URL + String.format(YQL_QUERY_HISTORICAL_RATES, symbol, sdf.format(dateFrom), sdf.format(dateTo)) + YQL_QUERY_POSTFIX),
-                eq(YqlQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), sdf.format(dateTo)));
+                eq(YqlHistoricalDataQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), sdf.format(dateTo)));
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, null, null);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, null, null);
 
         assertTrue("erList contains data for one year", erList.size() >= 365 && erList.size() <= 367);
         assertEquals(sdf.format(dateFrom), erList.get(0).getDate());
@@ -79,9 +79,9 @@ public class HistoricalExchangeRateServiceImplTest {
 
         when(restTemplate.getForObject(
                 eq(YQL_BASE_URL + String.format(YQL_QUERY_HISTORICAL_RATES, symbol, sdf.format(dateFrom), sdf.format(dateTo)) + YQL_QUERY_POSTFIX),
-                eq(YqlQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), sdf.format(dateTo)));
+                eq(YqlHistoricalDataQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), sdf.format(dateTo)));
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, sdf.format(dateFrom), null);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, sdf.format(dateFrom), null);
 
         assertEquals(21, erList.size());
         assertEquals(sdf.format(dateFrom), erList.get(0).getDate());
@@ -98,9 +98,9 @@ public class HistoricalExchangeRateServiceImplTest {
 
         when(restTemplate.getForObject(
                 eq(YQL_BASE_URL + String.format(YQL_QUERY_HISTORICAL_RATES, symbol, sdf.format(dateFrom), dateToString) + YQL_QUERY_POSTFIX),
-                eq(YqlQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), dateToString));
+                eq(YqlHistoricalDataQuery.class))).thenReturn(generateMock(symbol, sdf.format(dateFrom), dateToString));
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, null, dateToString);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, null, dateToString);
 
         assertTrue("erList contains data for one year", erList.size() >= 365 && erList.size() <= 367);
         assertEquals(sdf.format(dateFrom), erList.get(0).getDate());
@@ -114,9 +114,9 @@ public class HistoricalExchangeRateServiceImplTest {
         String to = "2016-01-31";
         when(restTemplate.getForObject(
                 eq(YQL_BASE_URL + String.format(YQL_QUERY_HISTORICAL_RATES, symbol, from, to) + YQL_QUERY_POSTFIX),
-                eq(YqlQuery.class))).thenReturn(generateMock(symbol, from, to));
+                eq(YqlHistoricalDataQuery.class))).thenReturn(generateMock(symbol, from, to));
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, from, to);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, from, to);
 
         assertEquals(31, erList.size());
         assertEquals(from, erList.get(0).getDate());
@@ -129,7 +129,7 @@ public class HistoricalExchangeRateServiceImplTest {
         String from = "2016-01-31";
         String to = "2016-01-01";
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, from, to);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, from, to);
     }
 
     @Test(expected = RuntimeException.class)
@@ -137,20 +137,20 @@ public class HistoricalExchangeRateServiceImplTest {
         String from = "2016-01-31";
         String to = "2016-01-31";
 
-        List<ExchangeRate> erList = service.getHistoricalExchangeRates(symbol, from, to);
+        List<HistoricalDataQuote> erList = service.getHistoricalExchangeRates(symbol, from, to);
     }
 
-    private YqlQuery generateMock(String symbol, String fromString, String toString) throws Exception {
-        YqlQuery yqlQuery = new YqlQuery();
-        Query query = new Query();
-        Results results = new Results();
-        List<ExchangeRate> quoteList = new ArrayList<>();
+    private YqlHistoricalDataQuery generateMock(String symbol, String fromString, String toString) throws Exception {
+        YqlHistoricalDataQuery yqlQuery = new YqlHistoricalDataQuery();
+        HistoricalDataQuery query = new HistoricalDataQuery();
+        HistoricalDataResults results = new HistoricalDataResults();
+        List<HistoricalDataQuote> quoteList = new ArrayList<>();
 
         Date currentDate = sdf.parse(fromString);
         if (currentDate.before(sdf.parse(toString))) {
             // This is the "normal" case
             while (!currentDate.after(sdf.parse(toString))) {
-                quoteList.add(new ExchangeRate(symbol, sdf.format(currentDate), generateRandomDouble()));
+                quoteList.add(new HistoricalDataQuote(symbol, sdf.format(currentDate), generateRandomDouble()));
                 calendar.setTime(currentDate);
                 calendar.add(Calendar.DATE, 1);
                 currentDate = calendar.getTime();

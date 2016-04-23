@@ -1,7 +1,7 @@
 package eu.yaga.stockanalyzer.service.impl;
 
-import eu.yaga.stockanalyzer.model.ExchangeRate;
-import eu.yaga.stockanalyzer.model.YqlQuery;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
+import eu.yaga.stockanalyzer.model.historicaldata.YqlHistoricalDataQuery;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,9 @@ import java.util.List;
 /**
  * Implementation of the {@link HistoricalExchangeRateService}
  */
-public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRateService {
+public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchangeRateService {
 
-    private static final Logger log = LoggerFactory.getLogger(HistoricalExchangeRateServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(YahooHistoricalExchangeRateServiceImpl.class);
 
     static final String YQL_BASE_URL = "https://query.yahooapis.com/v1/public/yql";
     static final String YQL_QUERY_POSTFIX = "&format=json&env=store://datatables.org/alltableswithkeys";
@@ -42,7 +42,7 @@ public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRate
      * @return Historical Exchange Rates
      */
     @Override
-    public List<ExchangeRate> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException {
+    public List<HistoricalDataQuote> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException {
 
         // Create default values
         Date dateTo = new Date();
@@ -68,7 +68,7 @@ public class HistoricalExchangeRateServiceImpl implements HistoricalExchangeRate
 
         String queryString = String.format(YQL_QUERY_HISTORICAL_RATES, symbol, sdf.format(dateFrom), sdf.format(dateTo));
 
-        YqlQuery queryResult = restTemplate.getForObject(YQL_BASE_URL + queryString + YQL_QUERY_POSTFIX, YqlQuery.class);
+        YqlHistoricalDataQuery queryResult = restTemplate.getForObject(YQL_BASE_URL + queryString + YQL_QUERY_POSTFIX, YqlHistoricalDataQuery.class);
         log.info(queryResult.toString());
 
         return queryResult.getQuery().getResults().getQuote();

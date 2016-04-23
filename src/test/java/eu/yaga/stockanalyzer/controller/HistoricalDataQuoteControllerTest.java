@@ -21,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-public class ExchangeRateControllerTest {
+public class HistoricalDataQuoteControllerTest {
 
     private MockMvc mockMvc;
     private String symbol = "APC.DE";

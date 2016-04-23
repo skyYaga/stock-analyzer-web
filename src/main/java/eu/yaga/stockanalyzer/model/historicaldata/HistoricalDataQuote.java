@@ -1,4 +1,4 @@
-package eu.yaga.stockanalyzer.model;
+package eu.yaga.stockanalyzer.model.historicaldata;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategy.PascalCaseStrategy.class)
-public class ExchangeRate {
+public class HistoricalDataQuote {
     private String symbol;
     private String date;
     private double close;
 
-    public ExchangeRate(String symbol, String date, double close) {
+    public HistoricalDataQuote(String symbol, String date, double close) {
         this.symbol = symbol;
         this.date = date;
         this.close = close;

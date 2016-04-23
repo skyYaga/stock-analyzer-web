@@ -1,6 +1,6 @@
 package eu.yaga.stockanalyzer.controller;
 
-import eu.yaga.stockanalyzer.model.ExchangeRate;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ class ExchangeRateController {
      * @throws ParseException if a submitted date is invalid
      */
     @RequestMapping(value = "/{symbol}", method = RequestMethod.GET)
-    public List<ExchangeRate> getExchangeRateForRange(
+    public List<HistoricalDataQuote> getExchangeRateForRange(
             @PathVariable String symbol,
             @RequestParam(value = "from", required = false) String dateStringFrom,
             @RequestParam(value = "to", required = false) String dateStringTo

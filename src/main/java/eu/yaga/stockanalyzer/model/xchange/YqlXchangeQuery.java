@@ -1,4 +1,4 @@
-package eu.yaga.stockanalyzer.model;
+package eu.yaga.stockanalyzer.model.xchange;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Representation of a YQL query JSON response
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class YqlQuery {
-    private Query query;
+public class YqlXchangeQuery {
+    private ExchangeQuery query;
 
-    public Query getQuery() {
+    public ExchangeQuery getQuery() {
         return query;
     }
 
-    public void setQuery(Query query) {
+    public void setQuery(ExchangeQuery query) {
         this.query = query;
     }
 
