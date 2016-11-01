@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Übersicht</title>
+</head>
+<body>
+    <h1>Verfügbare Aktien</h1>
+    <table>
+        <thead>
+            <th>Aktie</th>
+        </thead>
+        <tbody>
+            <tr th:each="sym : ${symbols}">
+                <td><a th:text="${sym}" th:href="'/stockdetail?symbol=' + ${sym}"></a></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -14,6 +14,8 @@ public class HistoricalDataQuote {
     private String date;
     private double close;
 
+    public HistoricalDataQuote() {}
+
     public HistoricalDataQuote(String symbol, String date, double close) {
         this.symbol = symbol;
         this.date = date;

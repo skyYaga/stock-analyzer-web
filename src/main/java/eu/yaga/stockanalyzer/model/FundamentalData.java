@@ -1,8 +1,10 @@
 package eu.yaga.stockanalyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A POJO for fundamental data
@@ -10,6 +12,11 @@ import java.util.ArrayList;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FundamentalData {
 
+    @Id
+    private String id;
+    private Date date;
+
+    private String symbol;
     private ArrayList<String> businessYears;
     private double roe;
     private double ebit;
@@ -17,6 +24,44 @@ public class FundamentalData {
     private double ask;
     private double perCurrent;
     private double per5years;
+
+    private int roeRating;
+    private int ebitRating;
+    private int equityRatioRating;
+    private int perCurrentRating;
+    private int per5yearsRating;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    /**
+     * get the symbol of the stock
+     * @return symbol
+     */
+    public String getSymbol() {
+        return symbol;
+    }
+
+    /**
+     * set the symbol of the stock
+     * @param symbol symbol
+     */
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
 
     /**
      * get the business years of the share
@@ -28,7 +73,7 @@ public class FundamentalData {
 
     /**
      * set the business years of the share
-     * @param businessYears
+     * @param businessYears businessYears
      */
     public void setBusinessYears(ArrayList<String> businessYears) {
         this.businessYears = businessYears;
@@ -44,7 +89,7 @@ public class FundamentalData {
 
     /**
      * set the return on equity (Eigenkapitalrendite) of the share in percentage
-     * @param roe
+     * @param roe roe
      */
     public void setRoe(double roe) {
         this.roe = roe;
@@ -52,7 +97,7 @@ public class FundamentalData {
 
     /**
      * get the ebit (EBIT-Marge) of the share in percentage
-     * @return
+     * @return ebit
      */
     public double getEbit() {
         return ebit;
@@ -60,7 +105,7 @@ public class FundamentalData {
 
     /**
      * set the ebit (EBIT-Marge) of the share in percentage
-     * @param ebit
+     * @param ebit ebit
      */
     public void setEbit(double ebit) {
         this.ebit = ebit;
@@ -68,7 +113,7 @@ public class FundamentalData {
 
     /**
      * get the equity ratio (Eigenkapitalquote) of the share in percentage
-     * @return
+     * @return equity ratio
      */
     public double getEquityRatio() {
         return equityRatio;
@@ -76,7 +121,7 @@ public class FundamentalData {
 
     /**
      * set the equity ratio (Eigenkapitalquote) of the share in percentage
-     * @param equityRatio
+     * @param equityRatio equity ratio
      */
     public void setEquityRatio(double equityRatio) {
         this.equityRatio = equityRatio;
@@ -84,7 +129,7 @@ public class FundamentalData {
 
     /**
      * get the current ask price of the share in percentage
-     * @return
+     * @return ask price
      */
     public double getAsk() {
         return ask;
@@ -92,7 +137,7 @@ public class FundamentalData {
 
     /**
      * set the current ask price of the share in percentage
-     * @param ask
+     * @param ask ask price
      */
     public void setAsk(double ask) {
         this.ask = ask;
@@ -100,7 +145,7 @@ public class FundamentalData {
 
     /**
      * get the current price-earning ratio PER (KGV)
-     * @return
+     * @return current per
      */
     public double getPerCurrent() {
         return perCurrent;
@@ -108,7 +153,7 @@ public class FundamentalData {
 
     /**
      * set the price-earning ratio PER (KGV)
-     * @param perCurrent
+     * @param perCurrent per Current
      */
     public void setPerCurrent(double perCurrent) {
         this.perCurrent = perCurrent;
@@ -116,7 +161,7 @@ public class FundamentalData {
 
     /**
      * get the 5 years price-earning ratio PER (KGV)
-     * @return
+     * @return 5 years per
      */
     public double getPer5years() {
         return per5years;
@@ -124,7 +169,7 @@ public class FundamentalData {
 
     /**
      * set the 5 years price-earning ratio PER (KGV)
-     * @param per5years
+     * @param per5years 5 years per
      */
     public void setPer5years(double per5years) {
         this.per5years = per5years;
@@ -168,5 +213,61 @@ public class FundamentalData {
      */
     public String getThreeYearsAgo() {
         return businessYears.get(4);
+    }
+
+    public int getRoeRating() {
+        return roeRating;
+    }
+
+    public void setRoeRating(int roeRating) {
+        this.roeRating = roeRating;
+    }
+
+    public int getEbitRating() {
+        return ebitRating;
+    }
+
+    public void setEbitRating(int ebitRating) {
+        this.ebitRating = ebitRating;
+    }
+
+    public int getEquityRatioRating() {
+        return equityRatioRating;
+    }
+
+    public void setEquityRatioRating(int equityRatioRating) {
+        this.equityRatioRating = equityRatioRating;
+    }
+
+    public int getPerCurrentRating() {
+        return perCurrentRating;
+    }
+
+    public void setPerCurrentRating(int perCurrentRating) {
+        this.perCurrentRating = perCurrentRating;
+    }
+
+    public int getPer5yearsRating() {
+        return per5yearsRating;
+    }
+
+    public void setPer5yearsRating(int per5yearsRating) {
+        this.per5yearsRating = per5yearsRating;
+    }
+
+    @Override
+    public String toString() {
+        return "FundamentalData{" +
+                "id='" + id + '\'' +
+                ", date=" + date +
+                ", symbol='" + symbol + '\'' +
+                ", businessYears=" + businessYears +
+                ", roe=" + roe +
+                ", ebit=" + ebit +
+                ", equityRatio=" + equityRatio +
+                ", ask=" + ask +
+                ", perCurrent=" + perCurrent +
+                ", per5years=" + per5years +
+                '}';
     }
 }

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public class OnVistaParser {
 
     @Autowired
-    CurrentStockQuotesService currentStockQuotesService;
+    private CurrentStockQuotesService currentStockQuotesService;
 
     private static final Logger log = LoggerFactory.getLogger(OnVistaParser.class);
 
@@ -27,7 +27,7 @@ public class OnVistaParser {
     private FundamentalData fundamentalData = new FundamentalData();
     private Matcher matcher;
 
-    public OnVistaParser() {};
+    public OnVistaParser() {}
 
     public FundamentalData getFundamentalData(String html, String symbol) {
         this.html = html;
@@ -36,6 +36,9 @@ public class OnVistaParser {
         Matcher matcher;
 
         log.info(html);
+
+        fundamentalData.setSymbol(symbol);
+        fundamentalData.setDate(new Date());
 
         String fiscalYearEnd = parseFiscalYearEnd();
         ArrayList<String> years = parseBusinessYears(fiscalYearEnd);
@@ -95,7 +98,7 @@ public class OnVistaParser {
 
         Pattern gewinnJahresPattern = Pattern.compile("<table><thead><tr><th>\\s*Gewinn\\s*((?!</tr>).)*</tr></thead><tbody>");
         matcher = gewinnJahresPattern.matcher(html);
-        ArrayList<String> gewinnJahresArray = new ArrayList<String>();
+        ArrayList<String> gewinnJahresArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -123,7 +126,7 @@ public class OnVistaParser {
 
         Pattern bilanzJahresPattern = Pattern.compile("<table><thead><tr><th>\\s*Bilanz\\s*((?!</tr>).)*</tr></thead><tbody>");
         matcher = bilanzJahresPattern.matcher(html);
-        ArrayList<String> balanceSheetArray = new ArrayList<String>();
+        ArrayList<String> balanceSheetArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -195,7 +198,7 @@ public class OnVistaParser {
             threeYearsAgoString = String.valueOf(threeYearsAgo).substring(2, 4) + "/" + String.valueOf(twoYearsAgo).substring(2, 4);
         }
 
-        ArrayList<String> jahresArray = new ArrayList<String>();
+        ArrayList<String> jahresArray = new ArrayList<>();
         jahresArray.addAll(Arrays.asList(nextYearString, currentYearString, lastYearString, twoYearsAgoString, threeYearsAgoString));
 
         log.info(jahresArray.toString());
@@ -206,14 +209,14 @@ public class OnVistaParser {
     /**
      * parses the earnings per share (Gewinn pro Aktie)
      * @return roe
-     * @param earningYears
+     * @param earningYears list of years
      */
     private Map<String,String> parseEarningsPerShare(ArrayList<String> earningYears) {
         // Gewinn pro Aktie (Tabelle Gewinn Jahresangaben)
 
         Pattern gewinnProAktiePattern = Pattern.compile("<tr>\\s*<td[^/]*Gewinn pro Aktie in EUR((?!</tr>).)*</tr>");
         matcher = gewinnProAktiePattern.matcher(html);
-        ArrayList<String> gewinnProAktieArray = new ArrayList<String>();
+        ArrayList<String> gewinnProAktieArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -234,7 +237,7 @@ public class OnVistaParser {
             throw new RuntimeException("gewinnJahresArray und gewinnProAktieArray sind nicht gleich gross");
         }
 
-        Map<String, String> gewinnMap = new HashMap<String, String>();
+        Map<String, String> gewinnMap = new HashMap<>();
         for (int i = 0; i < earningYears.size(); i++) {
             gewinnMap.put(earningYears.get(i), gewinnProAktieArray.get(i));
         }
@@ -246,14 +249,14 @@ public class OnVistaParser {
 
     /**
      * parses the profitability (Rentabilität) of the current stock
-     * @return
+     * @return profitabilityYears
      */
     private ArrayList<String> parseProfitabilityYears() {
         // Rentabilität Jahresangaben
 
         Pattern rentabilitaetJahresPattern = Pattern.compile("<table><thead><tr><th>\\s*Rentabilität\\s*((?!</tr>).)*</tr></thead><tbody>");
         matcher = rentabilitaetJahresPattern.matcher(html);
-        ArrayList<String> profitabilityYears = new ArrayList<String>();
+        ArrayList<String> profitabilityYears = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -275,12 +278,12 @@ public class OnVistaParser {
     /**
      * parses the return on equity
      * @return roe
-     * @param profitabilityYears
+     * @param profitabilityYears the available years
      */
     private double parseRoe(ArrayList<String> profitabilityYears) {
         Pattern roePattern = Pattern.compile("<tr>\\s*<td[^/]*Eigenkapitalrendite</td>((?!</tr>).)*</tr>");
         matcher = roePattern.matcher(html);
-        ArrayList<String> roeArray = new ArrayList<String>();
+        ArrayList<String> roeArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -301,27 +304,31 @@ public class OnVistaParser {
             throw new RuntimeException("roeArray und profitabilityYears sind nicht gleich gross");
         }
 
-        Map<String, String> roeMap = new HashMap<String, String>();
+        Map<String, String> roeMap = new HashMap<>();
         for (int i = 0; i < profitabilityYears.size(); i++) {
             roeMap.put(profitabilityYears.get(i), roeArray.get(i));
         }
 
-        log.info(roeMap.get(fundamentalData.getLastYear()));
+        log.info(roeMap.get("roe last year: " + fundamentalData.getLastYear()));
 
         String roe = roeMap.get(fundamentalData.getLastYear());
+        if (roe == null) {
+            log.info(roeMap.get("roe two years ago: " + fundamentalData.getLastYear()));
+            roe = roeMap.get(fundamentalData.getTwoYearsAgo());
+        }
         return Double.parseDouble(roe.replace("%", "").replace(",", "."));
     }
 
     /**
      * parses the ebit
      * @return ebit
-     * @param profitabilityYears
+     * @param profitabilityYears the available years
      */
     private double parseEbit(ArrayList<String> profitabilityYears) {
 
         Pattern ebitPattern = Pattern.compile("<tr>\\s*<td[^/]*EBIT-Marge</td>((?!</tr>).)*</tr>");
         matcher = ebitPattern.matcher(html);
-        ArrayList<String> ebitArray = new ArrayList<String>();
+        ArrayList<String> ebitArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -342,14 +349,18 @@ public class OnVistaParser {
             throw new RuntimeException("ebitArray und profitabilityYears sind nicht gleich gross");
         }
 
-        Map<String, String> ebitMap = new HashMap<String, String>();
+        Map<String, String> ebitMap = new HashMap<>();
         for (int i = 0; i < profitabilityYears.size(); i++) {
             ebitMap.put(profitabilityYears.get(i), ebitArray.get(i));
         }
 
-        log.info(ebitMap.get(fundamentalData.getLastYear()));
+        log.info(ebitMap.get("Ebit last year: " + fundamentalData.getLastYear()));
 
         String ebit = ebitMap.get(fundamentalData.getLastYear());
+        if (ebit == null) {
+            log.info(ebitMap.get("Ebit two years ago: " + fundamentalData.getTwoYearsAgo()));
+            ebit = ebitMap.get(fundamentalData.getTwoYearsAgo());
+        }
         return Double.parseDouble(ebit.replace("%", "").replace(",", "."));
     }
 
@@ -357,12 +368,12 @@ public class OnVistaParser {
     /**
      * parses the equity ratio
      * @return equity ratio
-     * @param balanceSheetYears
+     * @param balanceSheetYears the available years
      */
     private double parseEquityRatio(ArrayList<String> balanceSheetYears) {
         Pattern eigenkapitalquotePattern = Pattern.compile("<tr>\\s*<td[^/]*Eigenkapitalquote</td>((?!</tr>).)*</tr>");
         matcher = eigenkapitalquotePattern.matcher(html);
-        ArrayList<String> equityRatioArray = new ArrayList<String>();
+        ArrayList<String> equityRatioArray = new ArrayList<>();
 
         while (matcher.find()) {
             log.info("Matches gefunden!");
@@ -383,23 +394,27 @@ public class OnVistaParser {
             throw new RuntimeException("ebitArray und profitabilityYears sind nicht gleich gross");
         }
 
-        Map<String, String> equityRatioMap = new HashMap<String, String>();
+        Map<String, String> equityRatioMap = new HashMap<>();
         for (int i = 0; i < balanceSheetYears.size(); i++) {
             equityRatioMap.put(balanceSheetYears.get(i), equityRatioArray.get(i));
         }
 
-        log.info(equityRatioMap.get(fundamentalData.getLastYear()));
+        log.info("equity ratio last year: " + equityRatioMap.get(fundamentalData.getLastYear()));
 
         String equityRatio = equityRatioMap.get(fundamentalData.getLastYear());
+        if (equityRatio == null) {
+            log.info("equity ratio two years ago: " + equityRatioMap.get(fundamentalData.getLastYear()));
+            equityRatio = equityRatioMap.get(fundamentalData.getTwoYearsAgo());
+        }
         return Double.parseDouble(equityRatio.replace("%", "").replace(",", "."));
     }
 
     /**
      * Calculate the current 5 yearPER (KGV)
      *
-     * @param currentRate
-     * @param earningsPerShare
-     * @return
+     * @param currentRate the stocks current rate
+     * @param earningsPerShare eps
+     * @return 5 years PER
      */
     private double calculatePer5years(double currentRate, Map<String, String> earningsPerShare) {
         double next = Double.parseDouble(earningsPerShare.get(fundamentalData.getNextYear()).replace(",", "."));
@@ -417,15 +432,12 @@ public class OnVistaParser {
     /**
      * Calculate the current PER (KGV)
      *
-     * @param currentRate
-     * @param earningsPerShare
-     * @return
+     * @param currentRate the stocks current rate
+     * @param earningsPerShare eps
+     * @return the current PER
      */
     private double calculatePer(double currentRate, Map<String, String> earningsPerShare) {
         double current = Double.parseDouble(earningsPerShare.get(fundamentalData.getCurrentYear()).replace(",", "."));
-
-        double per = currentRate / current;
-
-        return per;
+        return currentRate / current;
     }
 }

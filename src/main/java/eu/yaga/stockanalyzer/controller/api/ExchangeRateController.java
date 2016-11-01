@@ -1,4 +1,4 @@
-package eu.yaga.stockanalyzer.controller;
+package eu.yaga.stockanalyzer.controller.api;
 
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * REST Controller for exchange rates
  */
 @RestController
-@RequestMapping("/exchange-rate")
+@RequestMapping("/api/exchange-rate")
 class ExchangeRateController {
 
     @Autowired
@@ -31,7 +31,7 @@ class ExchangeRateController {
      * @return a list of historical exchange rates
      * @throws ParseException if a submitted date is invalid
      */
-    @RequestMapping(value = "/{symbol}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{symbol:.+}", method = RequestMethod.GET)
     public List<HistoricalDataQuote> getExchangeRateForRange(
             @PathVariable String symbol,
             @RequestParam(value = "from", required = false) String dateStringFrom,

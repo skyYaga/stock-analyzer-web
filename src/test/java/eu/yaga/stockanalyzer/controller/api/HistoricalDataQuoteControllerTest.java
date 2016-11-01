@@ -1,4 +1,4 @@
-package eu.yaga.stockanalyzer.controller;
+package eu.yaga.stockanalyzer.controller.api;
 
 import eu.yaga.stockanalyzer.Application;
 import org.junit.Before;

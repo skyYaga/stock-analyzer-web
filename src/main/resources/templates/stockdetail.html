@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Stock Detail</title>
+</head>
+<body>
+    <h1 th:text="'Detail for ' + ${symbol} + '!'"></h1>
+    <table>
+        <thead>
+            <th>Kennzahl</th>
+            <th>Wert</th>
+            <th>Punkte</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>RoE LJ</td>
+                <td th:text="${roe}"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>EBIT-Marge LJ</td>
+                <td th:text="${ebit}"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Eigenkapitalquote LJ</td>
+                <td th:text="${equityRatio}"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>KGV 5 Jahre</td>
+                <td th:text="${per5years}"></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>KGV aktuell</td>
+                <td th:text="${perCurrent}"></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="/overview">Zurück zur Übersicht</a>
+</body>
+</html>
