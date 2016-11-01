@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * the Mongo repository that stores fetched and rated data
  */
 public interface FundamentalDataRepository extends MongoRepository<FundamentalData, String> {
-    FundamentalData findBySymbol(String symbol);
+    FundamentalData findBySymbolOrderByDateDesc(String symbol);
 }

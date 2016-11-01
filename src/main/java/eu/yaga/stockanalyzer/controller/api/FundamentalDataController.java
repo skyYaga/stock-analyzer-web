@@ -3,6 +3,7 @@ package eu.yaga.stockanalyzer.controller.api;
 import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.repository.FundamentalDataRepository;
 import eu.yaga.stockanalyzer.service.FundamentalDataService;
+import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ class FundamentalDataController {
 
     @Autowired
     private FundamentalDataService fundamentalDataService;
+
+    @Autowired
+    private StockRatingBusinessService stockRatingBusinessService;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -64,7 +68,7 @@ class FundamentalDataController {
      */
     @RequestMapping(value = "/{symbol:.+}", method = RequestMethod.GET)
     public FundamentalData getFundamentalData(@PathVariable String symbol) throws ParseException {
-        return fundamentalDataRepository.findBySymbol(symbol);
+        return fundamentalDataRepository.findBySymbolOrderByDateDesc(symbol);
     }
 
     /**
@@ -76,6 +80,11 @@ class FundamentalDataController {
     @RequestMapping(value = "/{symbol}/refresh", method = RequestMethod.GET)
     public FundamentalData refreshFundamentalData(@PathVariable String symbol) throws ParseException {
         FundamentalData fundamentalData = fundamentalDataService.getFundamentalData(symbol);
+        log.info("Got Fundamental Data: " + fundamentalData);
+
+        fundamentalData = stockRatingBusinessService.rate(fundamentalData);
+        log.info("Fundamental Data rated: " + fundamentalData);
+
         FundamentalData saved = fundamentalDataRepository.save(fundamentalData);
         log.info("SAVED: " + saved);
 

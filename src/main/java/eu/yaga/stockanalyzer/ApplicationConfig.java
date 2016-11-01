@@ -4,6 +4,8 @@ import eu.yaga.stockanalyzer.parser.OnVistaParser;
 import eu.yaga.stockanalyzer.service.CurrentStockQuotesService;
 import eu.yaga.stockanalyzer.service.FundamentalDataService;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
+import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
+import eu.yaga.stockanalyzer.service.impl.StockRatingBusinessServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.YahooCurrentStockQuotesServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.YahooHistoricalExchangeRateServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.OnVistaFundamentalDataServiceImpl;
@@ -31,6 +33,9 @@ public class ApplicationConfig {
     public CurrentStockQuotesService getCurrentStockQuotesService() {
         return new YahooCurrentStockQuotesServiceImpl();
     }
+
+    @Bean
+    public StockRatingBusinessService getStockRatingBusinessService() { return new StockRatingBusinessServiceImpl(); }
 
     @Bean
     public OnVistaParser getOnVistaParser() {

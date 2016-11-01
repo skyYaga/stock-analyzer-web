@@ -1,8 +1,8 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.Application;
-import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuery;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataResults;
 import eu.yaga.stockanalyzer.model.historicaldata.YqlHistoricalDataQuery;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
@@ -22,7 +22,8 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for the {@link YahooHistoricalExchangeRateServiceImpl}

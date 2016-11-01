@@ -25,11 +25,15 @@ public class FundamentalData {
     private double perCurrent;
     private double per5years;
 
+    private double analystEstimation;
+
+    private int overallRating;
     private int roeRating;
     private int ebitRating;
     private int equityRatioRating;
     private int perCurrentRating;
     private int per5yearsRating;
+    private int analystEstimationRating;
 
     public String getId() {
         return id;
@@ -65,7 +69,7 @@ public class FundamentalData {
 
     /**
      * get the business years of the share
-     * @return
+     * @return the business years
      */
     public ArrayList<String> getBusinessYears() {
         return businessYears;
@@ -215,6 +219,14 @@ public class FundamentalData {
         return businessYears.get(4);
     }
 
+    public int getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(int overallRating) {
+        this.overallRating = overallRating;
+    }
+
     public int getRoeRating() {
         return roeRating;
     }
@@ -253,6 +265,22 @@ public class FundamentalData {
 
     public void setPer5yearsRating(int per5yearsRating) {
         this.per5yearsRating = per5yearsRating;
+    }
+
+    public double getAnalystEstimation() {
+        return analystEstimation;
+    }
+
+    public void setAnalystEstimation(double analystEstimation) {
+        this.analystEstimation = analystEstimation;
+    }
+
+    public int getAnalystEstimationRating() {
+        return analystEstimationRating;
+    }
+
+    public void setAnalystEstimationRating(int analystEstimationRating) {
+        this.analystEstimationRating = analystEstimationRating;
     }
 
     @Override

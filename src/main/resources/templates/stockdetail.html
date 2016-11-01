@@ -5,42 +5,64 @@
     <title>Stock Detail</title>
 </head>
 <body>
-    <h1 th:text="'Detail for ' + ${symbol} + '!'"></h1>
+    <h1 th:text="'Details für ' + ${fundamentalData.symbol}"></h1>
+
+    <p th:text="'Daten vom ' + ${fundamentalData.date}"></p>
+
     <table>
         <thead>
             <th>Kennzahl</th>
+            <th>Details</th>
             <th>Wert</th>
             <th>Punkte</th>
         </thead>
         <tbody>
             <tr>
                 <td>RoE LJ</td>
-                <td th:text="${roe}"></td>
                 <td></td>
+                <td th:text="${fundamentalData.roe}"></td>
+                <td th:text="${fundamentalData.roeRating}"></td>
             </tr>
             <tr>
                 <td>EBIT-Marge LJ</td>
-                <td th:text="${ebit}"></td>
                 <td></td>
+                <td th:text="${fundamentalData.ebit}"></td>
+                <td th:text="${fundamentalData.ebitRating}"></td>
             </tr>
             <tr>
                 <td>Eigenkapitalquote LJ</td>
-                <td th:text="${equityRatio}"></td>
                 <td></td>
+                <td th:text="${fundamentalData.equityRatio}"></td>
+                <td th:text="${fundamentalData.equityRatioRating}"></td>
             </tr>
             <tr>
                 <td>KGV 5 Jahre</td>
-                <td th:text="${per5years}"></td>
                 <td></td>
+                <td th:text="${fundamentalData.per5years}"></td>
+                <td th:text="${fundamentalData.per5yearsRating}"></td>
             </tr>
             <tr>
                 <td>KGV aktuell</td>
-                <td th:text="${perCurrent}"></td>
                 <td></td>
+                <td th:text="${fundamentalData.perCurrent}"></td>
+                <td th:text="${fundamentalData.perCurrentRating}"></td>
+            </tr>
+            <tr>
+                <td>Analystenmeinungen</td>
+                <td>Verkaufen (3) - Kaufen (1)</td>
+                <td th:text="${fundamentalData.analystEstimation}"></td>
+                <td th:text="${fundamentalData.analystEstimationRating}"></td>
+            </tr>
+            <tr>
+                <td>Gesamtrating</td>
+                <td></td>
+                <td></td>
+                <td th:text="${fundamentalData.overallRating}"></td>
             </tr>
         </tbody>
     </table>
 
-    <a href="/overview">Zurück zur Übersicht</a>
+    <p><a th:text="${fundamentalData.symbol} + ' bearbeiten'" th:href="'/stockdetail/edit?symbol=' + ${fundamentalData.symbol}"></a></p>
+    <p><a href="/overview">Zurück zur Übersicht</a></p>
 </body>
 </html>
