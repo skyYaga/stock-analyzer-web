@@ -57,6 +57,9 @@ class StockDetailController {
         log.info("in stockSubmit");
         FundamentalData workingFundamentalData = fundamentalDataRepository.findBySymbolOrderByDateDesc(fundamentalData.getSymbol());
         workingFundamentalData.setAnalystEstimation(fundamentalData.getAnalystEstimation());
+        workingFundamentalData.setStockIndex(fundamentalData.getStockIndex());
+        workingFundamentalData.setLastQuarterlyFigures(fundamentalData.getLastQuarterlyFigures());
+        workingFundamentalData.setNextQuarterlyFigures(fundamentalData.getNextQuarterlyFigures());
 
         workingFundamentalData = stockRatingBusinessService.rate(workingFundamentalData);
         fundamentalDataRepository.save(workingFundamentalData);

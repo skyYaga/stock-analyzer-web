@@ -2,6 +2,7 @@ package eu.yaga.stockanalyzer.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,6 +25,11 @@ public class FundamentalData {
     private double ask;
     private double perCurrent;
     private double per5years;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date lastQuarterlyFigures;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date nextQuarterlyFigures;
+    private String stockIndex;
 
     private double analystEstimation;
 
@@ -34,6 +40,7 @@ public class FundamentalData {
     private int perCurrentRating;
     private int per5yearsRating;
     private int analystEstimationRating;
+    private int lastQuarterlyFiguresRating;
 
     public String getId() {
         return id;
@@ -281,6 +288,38 @@ public class FundamentalData {
 
     public void setAnalystEstimationRating(int analystEstimationRating) {
         this.analystEstimationRating = analystEstimationRating;
+    }
+
+    public Date getLastQuarterlyFigures() {
+        return lastQuarterlyFigures;
+    }
+
+    public void setLastQuarterlyFigures(Date lastQuarterlyFigures) {
+        this.lastQuarterlyFigures = lastQuarterlyFigures;
+    }
+
+    public int getLastQuarterlyFiguresRating() {
+        return lastQuarterlyFiguresRating;
+    }
+
+    public void setLastQuarterlyFiguresRating(int lastQuarterlyFiguresRating) {
+        this.lastQuarterlyFiguresRating = lastQuarterlyFiguresRating;
+    }
+
+    public Date getNextQuarterlyFigures() {
+        return nextQuarterlyFigures;
+    }
+
+    public void setNextQuarterlyFigures(Date nextQuarterlyFigures) {
+        this.nextQuarterlyFigures = nextQuarterlyFigures;
+    }
+
+    public String getStockIndex() {
+        return stockIndex;
+    }
+
+    public void setStockIndex(String stockIndex) {
+        this.stockIndex = stockIndex;
     }
 
     @Override

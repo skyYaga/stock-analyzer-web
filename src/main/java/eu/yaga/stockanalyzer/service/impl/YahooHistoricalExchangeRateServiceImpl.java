@@ -1,5 +1,6 @@
 package eu.yaga.stockanalyzer.service.impl;
 
+import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.model.historicaldata.YqlHistoricalDataQuery;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
@@ -29,6 +30,7 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
 
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private Calendar calendar = GregorianCalendar.getInstance();
 
     @Autowired
     private RestTemplate restTemplate;
@@ -50,7 +52,6 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
             dateTo = sdf.parse(dateStringTo);
         }
 
-        Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(dateTo);
         calendar.add(Calendar.YEAR, -1);
         Date dateFrom = calendar.getTime();
@@ -72,5 +73,55 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
         log.info(queryResult.toString());
 
         return queryResult.getQuery().getResults().getQuote();
+    }
+
+    /**
+     * This method returns the stock's reaction to quarterly figures (comparing it to its index)
+     *
+     * @param fundamentalData of the stock
+     * @return the progress difference to the index
+     */
+    @Override
+    public double getReactionToQuarterlyFigures(FundamentalData fundamentalData) {
+        try {
+            Date date = fundamentalData.getLastQuarterlyFigures();
+            String symbol = fundamentalData.getSymbol();
+            String indexSymbol = fundamentalData.getStockIndex();
+
+            if (date == null || symbol == null || indexSymbol == null) {
+                return -9999;
+            }
+
+            String dateString = sdf.format(date);
+
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            String priorDay = sdf.format(calendar.getTime());
+
+            List<HistoricalDataQuote> ratesSymbol = getHistoricalExchangeRates(symbol, priorDay, dateString);
+            while (ratesSymbol.size() < 2) {
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                priorDay = sdf.format(calendar.getTime());
+                ratesSymbol = getHistoricalExchangeRates(symbol, priorDay, dateString);
+            }
+            List<HistoricalDataQuote> ratesIndex = getHistoricalExchangeRates(indexSymbol, priorDay, dateString);
+
+            // calculate Data
+            double closeSymbol = ratesSymbol.get(0).getClose();
+            double closeSymbolPriorDay = ratesSymbol.get(1).getClose();
+            double closeIndex = ratesIndex.get(0).getClose();
+            double closeIndexPriorDay = ratesIndex.get(1).getClose();
+
+            double progressSymbol = (1 - closeSymbolPriorDay / closeSymbol) * 100;
+            log.info("progressSymbol " + symbol + ": " + progressSymbol);
+            double progressIndex = (1 - closeIndexPriorDay / closeIndex) * 100;
+            log.info("progressIndex " + indexSymbol + ": " + progressIndex);
+
+            double totalProgress = progressSymbol - progressIndex;
+            log.info("totalProgress: " + totalProgress);
+            return totalProgress;
+        } catch (ParseException e) {
+            return -9999;
+        }
     }
 }

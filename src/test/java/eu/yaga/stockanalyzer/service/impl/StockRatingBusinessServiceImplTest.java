@@ -1,18 +1,29 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Date;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for StockRatingBusinessServiceImpl
  */
 public class StockRatingBusinessServiceImplTest {
 
-    private StockRatingBusinessServiceImpl service = new StockRatingBusinessServiceImpl();
+    private StockRatingBusinessServiceImpl service;
+
+    public void setUpGood() {
+
+    }
 
     @Test
     public void testGoodRating() {
+
         FundamentalData fd = new FundamentalData();
         fd.setRoe(21);
         fd.setEbit(13);
@@ -20,10 +31,15 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPer5years(11);
         fd.setPerCurrent(11);
         fd.setAnalystEstimation(2.6);
+        fd.setLastQuarterlyFigures(new Date());
+
+        HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
+        when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(1.1);
+        service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", 6, fd.getOverallRating());
+        Assert.assertEquals("OverallRating", 7, fd.getOverallRating());
     }
 
     @Test
@@ -35,6 +51,11 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPer5years(14);
         fd.setPerCurrent(14);
         fd.setAnalystEstimation(2);
+        fd.setLastQuarterlyFigures(new Date());
+
+        HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
+        when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(0.0);
+        service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
@@ -44,6 +65,7 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("Per5yearsRating", 0, fd.getPer5yearsRating());
         Assert.assertEquals("PerCurrentRating", 0, fd.getPerCurrentRating());
         Assert.assertEquals("AnalystEstimationRating", 0, fd.getAnalystEstimationRating());
+        Assert.assertEquals("LastQuarterlyFiguresRating", 0, fd.getLastQuarterlyFiguresRating());
         Assert.assertEquals("OverallRating", 0, fd.getOverallRating());
     }
 
@@ -56,9 +78,14 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPer5years(17);
         fd.setPerCurrent(17);
         fd.setAnalystEstimation(1.5);
+        fd.setLastQuarterlyFigures(new Date());
+
+        HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
+        when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(-1.1);
+        service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", -6, fd.getOverallRating());
+        Assert.assertEquals("OverallRating", -7, fd.getOverallRating());
     }
 }

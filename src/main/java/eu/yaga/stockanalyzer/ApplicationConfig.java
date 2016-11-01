@@ -9,6 +9,7 @@ import eu.yaga.stockanalyzer.service.impl.StockRatingBusinessServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.YahooCurrentStockQuotesServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.YahooHistoricalExchangeRateServiceImpl;
 import eu.yaga.stockanalyzer.service.impl.OnVistaFundamentalDataServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -34,8 +35,11 @@ public class ApplicationConfig {
         return new YahooCurrentStockQuotesServiceImpl();
     }
 
+    @Autowired
+    private HistoricalExchangeRateService historicalExchangeRateService;
+
     @Bean
-    public StockRatingBusinessService getStockRatingBusinessService() { return new StockRatingBusinessServiceImpl(); }
+    public StockRatingBusinessService getStockRatingBusinessService() { return new StockRatingBusinessServiceImpl(historicalExchangeRateService); }
 
     @Bean
     public OnVistaParser getOnVistaParser() {

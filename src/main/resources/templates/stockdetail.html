@@ -8,6 +8,7 @@
     <h1 th:text="'Details für ' + ${fundamentalData.symbol}"></h1>
 
     <p th:text="'Daten vom ' + ${fundamentalData.date}"></p>
+    <p th:text="'Index: ' + ${fundamentalData.stockIndex}"></p>
 
     <table>
         <thead>
@@ -52,6 +53,12 @@
                 <td>Verkaufen (3) - Kaufen (1)</td>
                 <td th:text="${fundamentalData.analystEstimation}"></td>
                 <td th:text="${fundamentalData.analystEstimationRating}"></td>
+            </tr>
+            <tr>
+                <td>Reaktion auf Quartalszahlen</td>
+                <td th:text="'Nächste Quartalszahlen: ' + ${fundamentalData.nextQuarterlyFigures}"></td>
+                <td th:text="${fundamentalData.lastQuarterlyFigures}?${#dates.format(fundamentalData.lastQuarterlyFigures, 'dd.MM.yyyy')}"></td>
+                <td th:text="${fundamentalData.lastQuarterlyFiguresRating}"></td>
             </tr>
             <tr>
                 <td>Gesamtrating</td>

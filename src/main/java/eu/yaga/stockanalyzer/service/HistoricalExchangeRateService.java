@@ -1,5 +1,6 @@
 package eu.yaga.stockanalyzer.service;
 
+import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import org.springframework.stereotype.Service;
 
@@ -21,4 +22,12 @@ public interface HistoricalExchangeRateService {
      * @return Historical Exchange Rates
      */
     List<HistoricalDataQuote> getHistoricalExchangeRates(String symbol, String dateStringFrom, String dateStringTo) throws ParseException;
+
+    /**
+     * This method returns the stock's reaction to quarterly figures (comparing it to its index)
+     *
+     * @param fundamentalData of the stock
+     * @return the progress difference to the index
+     */
+    double getReactionToQuarterlyFigures(FundamentalData fundamentalData);
 }

@@ -1,12 +1,20 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 
 /**
  * Implementation of StockRatingBusinessService
  */
 public class StockRatingBusinessServiceImpl implements StockRatingBusinessService {
+
+    private HistoricalExchangeRateService historicalExchangeRateService;
+
+    public StockRatingBusinessServiceImpl(HistoricalExchangeRateService historicalExchangeRateService) {
+        this.historicalExchangeRateService = historicalExchangeRateService;
+    }
+
     /**
      * rate a stock
      *
@@ -20,14 +28,29 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
         fd = rateEquityRatio(fd);
         fd = ratePer5years(fd);
         fd = ratePerCurrent(fd);
-        fd = analystEstimation(fd);
+        fd = rateAnalystEstimation(fd);
+        fd = rateQuarterlyFigures(fd);
 
         fd = rateOverall(fd);
 
         return fd;
     }
 
-    private FundamentalData analystEstimation(FundamentalData fd) {
+    private FundamentalData rateQuarterlyFigures(FundamentalData fd) {
+        double reactionToQuarterlyFigures = historicalExchangeRateService.getReactionToQuarterlyFigures(fd);
+
+        if (reactionToQuarterlyFigures >= 1) {
+            fd.setLastQuarterlyFiguresRating(1);
+        } else if (reactionToQuarterlyFigures <= -1) {
+            fd.setLastQuarterlyFiguresRating(-1);
+        } else {
+            fd.setLastQuarterlyFiguresRating(0);
+        }
+
+        return fd;
+    }
+
+    private FundamentalData rateAnalystEstimation(FundamentalData fd) {
         double analystEstimation = fd.getAnalystEstimation();
 
         if (analystEstimation >= 2.5) {
@@ -47,7 +70,8 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
                 + fd.getEquityRatioRating()
                 + fd.getPer5yearsRating()
                 + fd.getPerCurrentRating()
-                + fd.getAnalystEstimationRating();
+                + fd.getAnalystEstimationRating()
+                + fd.getLastQuarterlyFiguresRating();
 
         fd.setOverallRating(overallRating);
         return fd;

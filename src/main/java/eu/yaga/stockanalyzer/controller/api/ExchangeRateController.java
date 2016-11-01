@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * REST Controller for exchange rates
@@ -18,8 +17,6 @@ class ExchangeRateController {
 
     @Autowired
     private HistoricalExchangeRateService historicalExchangeRateService;
-
-    private final AtomicLong counter = new AtomicLong();
 
     /**
      * This Controller returns the historical exchange rates for the given symbol<br/>

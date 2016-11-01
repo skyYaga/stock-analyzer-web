@@ -3,6 +3,7 @@ package eu.yaga.stockanalyzer.controller.api;
 import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.repository.FundamentalDataRepository;
 import eu.yaga.stockanalyzer.service.FundamentalDataService;
+import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ class FundamentalDataController {
 
     @Autowired
     private FundamentalDataRepository fundamentalDataRepository;
+
+    @Autowired
+    private HistoricalExchangeRateService historicalExchangeRateService;
 
     private final AtomicLong counter = new AtomicLong();
 
