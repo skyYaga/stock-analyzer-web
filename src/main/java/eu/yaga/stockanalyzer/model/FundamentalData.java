@@ -30,6 +30,8 @@ public class FundamentalData {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date nextQuarterlyFigures;
     private String stockIndex;
+    private double rateProgress6month;
+    private double rateProgress1year;
 
     private double analystEstimation;
 
@@ -41,6 +43,8 @@ public class FundamentalData {
     private int per5yearsRating;
     private int analystEstimationRating;
     private int lastQuarterlyFiguresRating;
+    private int rateProgress6monthRating;
+    private int rateProgress1yearRating;
 
     public String getId() {
         return id;
@@ -320,6 +324,38 @@ public class FundamentalData {
 
     public void setStockIndex(String stockIndex) {
         this.stockIndex = stockIndex;
+    }
+
+    public double getRateProgress6month() {
+        return rateProgress6month;
+    }
+
+    public void setRateProgress6month(double rateProgress6month) {
+        this.rateProgress6month = rateProgress6month;
+    }
+
+    public double getRateProgress1year() {
+        return rateProgress1year;
+    }
+
+    public void setRateProgress1year(double rateProgress1year) {
+        this.rateProgress1year = rateProgress1year;
+    }
+
+    public int getRateProgress6monthRating() {
+        return rateProgress6monthRating;
+    }
+
+    public void setRateProgress6monthRating(int rateProgress6monthRating) {
+        this.rateProgress6monthRating = rateProgress6monthRating;
+    }
+
+    public int getRateProgress1yearRating() {
+        return rateProgress1yearRating;
+    }
+
+    public void setRateProgress1yearRating(int rateProgress1yearRating) {
+        this.rateProgress1yearRating = rateProgress1yearRating;
     }
 
     @Override

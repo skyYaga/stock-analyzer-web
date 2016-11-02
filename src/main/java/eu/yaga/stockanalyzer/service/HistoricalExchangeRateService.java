@@ -30,4 +30,19 @@ public interface HistoricalExchangeRateService {
      * @return the progress difference to the index
      */
     double getReactionToQuarterlyFigures(FundamentalData fundamentalData);
+
+    /**
+     * This method calculates the stock progression within the last 6 months
+     *
+     * @param fundamentalData of the stock
+     * @return the progression in percent
+     */
+    double getRateProgress6month(FundamentalData fundamentalData);
+
+    /**
+     * This method calculates the stock progression within the last 1 year
+     * @param fundamentalData of the stock
+     * @return the progression in percent
+     */
+    double getRateProgress1year(FundamentalData fundamentalData);
 }

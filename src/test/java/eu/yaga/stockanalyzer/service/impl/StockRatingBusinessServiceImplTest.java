@@ -35,11 +35,17 @@ public class StockRatingBusinessServiceImplTest {
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(1.1);
+        when(mockedRateService.getRateProgress6month(fd)).thenReturn(6.0);
+        when(mockedRateService.getRateProgress1year(fd)).thenReturn(7.0);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", 7, fd.getOverallRating());
+        Assert.assertEquals("OverallRating", 9, fd.getOverallRating());
+        Assert.assertEquals("RateProgress6month", 6.0, fd.getRateProgress6month(), 0);
+        Assert.assertEquals("RateProgress6month", 1, fd.getRateProgress6monthRating());
+        Assert.assertEquals("RateProgress1year", 7.0, fd.getRateProgress1year(), 0);
+        Assert.assertEquals("RateProgress1year", 1, fd.getRateProgress1yearRating());
     }
 
     @Test
@@ -55,6 +61,8 @@ public class StockRatingBusinessServiceImplTest {
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(0.0);
+        when(mockedRateService.getRateProgress6month(fd)).thenReturn(2.0);
+        when(mockedRateService.getRateProgress1year(fd)).thenReturn(-2.0);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
@@ -66,6 +74,10 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("PerCurrentRating", 0, fd.getPerCurrentRating());
         Assert.assertEquals("AnalystEstimationRating", 0, fd.getAnalystEstimationRating());
         Assert.assertEquals("LastQuarterlyFiguresRating", 0, fd.getLastQuarterlyFiguresRating());
+        Assert.assertEquals("RateProgress6month", 2.0, fd.getRateProgress6month(), 0);
+        Assert.assertEquals("RateProgress6month", 0, fd.getRateProgress6monthRating());
+        Assert.assertEquals("RateProgress1year", -2.0, fd.getRateProgress1year(), 0);
+        Assert.assertEquals("RateProgress1year", 0, fd.getRateProgress1yearRating());
         Assert.assertEquals("OverallRating", 0, fd.getOverallRating());
     }
 
@@ -82,10 +94,16 @@ public class StockRatingBusinessServiceImplTest {
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(-1.1);
+        when(mockedRateService.getRateProgress6month(fd)).thenReturn(-6.0);
+        when(mockedRateService.getRateProgress1year(fd)).thenReturn(-7.0);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", -7, fd.getOverallRating());
+        Assert.assertEquals("RateProgress6month", -6.0, fd.getRateProgress6month(), 0);
+        Assert.assertEquals("RateProgress6month", -1, fd.getRateProgress6monthRating());
+        Assert.assertEquals("RateProgress1year", -7.0, fd.getRateProgress1year(), 0);
+        Assert.assertEquals("RateProgress1year", -1, fd.getRateProgress1yearRating());
+        Assert.assertEquals("OverallRating", -9, fd.getOverallRating());
     }
 }

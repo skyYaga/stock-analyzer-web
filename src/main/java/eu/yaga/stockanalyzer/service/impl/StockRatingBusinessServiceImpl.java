@@ -30,8 +30,40 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
         fd = ratePerCurrent(fd);
         fd = rateAnalystEstimation(fd);
         fd = rateQuarterlyFigures(fd);
+        fd = rateRateProgress6month(fd);
+        fd = rateRateProgress1year(fd);
 
         fd = rateOverall(fd);
+
+        return fd;
+    }
+
+    private FundamentalData rateRateProgress1year(FundamentalData fd) {
+        double rateProgress1year = historicalExchangeRateService.getRateProgress1year(fd);
+        fd.setRateProgress1year(rateProgress1year);
+
+        if (rateProgress1year > 5) {
+            fd.setRateProgress1yearRating(1);
+        } else if (rateProgress1year < -5) {
+            fd.setRateProgress1yearRating(-1);
+        } else {
+            fd.setRateProgress1yearRating(0);
+        }
+
+        return fd;
+    }
+
+    private FundamentalData rateRateProgress6month(FundamentalData fd) {
+        double rateProgress6month = historicalExchangeRateService.getRateProgress6month(fd);
+        fd.setRateProgress6month(rateProgress6month);
+
+        if (rateProgress6month > 5) {
+            fd.setRateProgress6monthRating(1);
+        } else if (rateProgress6month < -5) {
+            fd.setRateProgress6monthRating(-1);
+        } else {
+            fd.setRateProgress6monthRating(0);
+        }
 
         return fd;
     }
@@ -71,7 +103,9 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
                 + fd.getPer5yearsRating()
                 + fd.getPerCurrentRating()
                 + fd.getAnalystEstimationRating()
-                + fd.getLastQuarterlyFiguresRating();
+                + fd.getLastQuarterlyFiguresRating()
+                + fd.getRateProgress6monthRating()
+                + fd.getRateProgress1yearRating();
 
         fd.setOverallRating(overallRating);
         return fd;
