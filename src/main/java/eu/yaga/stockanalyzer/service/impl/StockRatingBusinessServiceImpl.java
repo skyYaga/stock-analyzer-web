@@ -32,8 +32,24 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
         fd = rateQuarterlyFigures(fd);
         fd = rateRateProgress6month(fd);
         fd = rateRateProgress1year(fd);
+        fd = rateRateMomentum(fd);
 
         fd = rateOverall(fd);
+
+        return fd;
+    }
+
+    private FundamentalData rateRateMomentum(FundamentalData fd) {
+        int rateProgress6monthRating = fd.getRateProgress6monthRating();
+        int rateProgress1yearRating = fd.getRateProgress1yearRating();
+
+        if (rateProgress6monthRating == 1 && rateProgress1yearRating <= 0) {
+            fd.setRateMomentumRating(1);
+        } else if (rateProgress6monthRating == -1 && rateProgress1yearRating >= 0) {
+            fd.setRateMomentumRating(-1);
+        } else {
+            fd.setRateMomentumRating(0);
+        }
 
         return fd;
     }
@@ -105,7 +121,8 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
                 + fd.getAnalystEstimationRating()
                 + fd.getLastQuarterlyFiguresRating()
                 + fd.getRateProgress6monthRating()
-                + fd.getRateProgress1yearRating();
+                + fd.getRateProgress1yearRating()
+                + fd.getRateMomentumRating();
 
         fd.setOverallRating(overallRating);
         return fd;

@@ -45,6 +45,7 @@ public class FundamentalData {
     private int lastQuarterlyFiguresRating;
     private int rateProgress6monthRating;
     private int rateProgress1yearRating;
+    private int rateMomentumRating;
 
     public String getId() {
         return id;
@@ -356,6 +357,14 @@ public class FundamentalData {
 
     public void setRateProgress1yearRating(int rateProgress1yearRating) {
         this.rateProgress1yearRating = rateProgress1yearRating;
+    }
+
+    public int getRateMomentumRating() {
+        return rateMomentumRating;
+    }
+
+    public void setRateMomentumRating(int rateMomentumRating) {
+        this.rateMomentumRating = rateMomentumRating;
     }
 
     @Override
