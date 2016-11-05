@@ -169,30 +169,40 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public List<Double> getReversal3Month(FundamentalData fundamentalData) {
-        LocalDate lastMonth = LocalDate.now().minusMonths(1);
-        LocalDate twoMonthAgo = LocalDate.now().minusMonths(2);
-        LocalDate threeMonthAgo = LocalDate.now().minusMonths(3);
-        LocalDate fourMonthAgo = LocalDate.now().minusMonths(4);
+        String symbol = fundamentalData.getSymbol();
+        String stockIndex = fundamentalData.getStockIndex();
 
-        LocalDate endOfLastMonth = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
-        LocalDate endOfTwoMonthAgo = twoMonthAgo.withDayOfMonth(twoMonthAgo.lengthOfMonth());
-        LocalDate endOfThreeMonthAgo = threeMonthAgo.withDayOfMonth(threeMonthAgo.lengthOfMonth());
-        LocalDate endOfFourMonthAgo = fourMonthAgo.withDayOfMonth(fourMonthAgo.lengthOfMonth());
+        if (symbol != null && stockIndex != null) {
+            LocalDate lastMonth = LocalDate.now().minusMonths(1);
+            LocalDate twoMonthAgo = LocalDate.now().minusMonths(2);
+            LocalDate threeMonthAgo = LocalDate.now().minusMonths(3);
+            LocalDate fourMonthAgo = LocalDate.now().minusMonths(4);
 
-        double symbolProgressLastMonth = getRateProgress(fundamentalData.getSymbol(), endOfLastMonth, endOfTwoMonthAgo);
-        double symbolProgressTwoMonthAgo = getRateProgress(fundamentalData.getSymbol(), endOfTwoMonthAgo, endOfThreeMonthAgo);
-        double symbolProgressThreeMonthAgo = getRateProgress(fundamentalData.getSymbol(), endOfThreeMonthAgo, endOfFourMonthAgo);
+            LocalDate endOfLastMonth = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
+            LocalDate endOfTwoMonthAgo = twoMonthAgo.withDayOfMonth(twoMonthAgo.lengthOfMonth());
+            LocalDate endOfThreeMonthAgo = threeMonthAgo.withDayOfMonth(threeMonthAgo.lengthOfMonth());
+            LocalDate endOfFourMonthAgo = fourMonthAgo.withDayOfMonth(fourMonthAgo.lengthOfMonth());
 
-        double indexProgressLastMonth = getRateProgress(fundamentalData.getStockIndex(), endOfLastMonth, endOfTwoMonthAgo);
-        double indexProgressTwoMonthAgo = getRateProgress(fundamentalData.getStockIndex(), endOfTwoMonthAgo, endOfThreeMonthAgo);
-        double indexProgressThreeMonthAgo = getRateProgress(fundamentalData.getStockIndex(), endOfThreeMonthAgo, endOfFourMonthAgo);
+            double symbolProgressLastMonth = getRateProgress(symbol, endOfLastMonth, endOfTwoMonthAgo);
+            double symbolProgressTwoMonthAgo = getRateProgress(symbol, endOfTwoMonthAgo, endOfThreeMonthAgo);
+            double symbolProgressThreeMonthAgo = getRateProgress(symbol, endOfThreeMonthAgo, endOfFourMonthAgo);
 
-        List<Double> reversalList = new ArrayList<>();
-        reversalList.add(symbolProgressLastMonth - indexProgressLastMonth);
-        reversalList.add(symbolProgressTwoMonthAgo - indexProgressTwoMonthAgo);
-        reversalList.add(symbolProgressThreeMonthAgo - indexProgressThreeMonthAgo);
+            double indexProgressLastMonth = getRateProgress(stockIndex, endOfLastMonth, endOfTwoMonthAgo);
+            double indexProgressTwoMonthAgo = getRateProgress(stockIndex, endOfTwoMonthAgo, endOfThreeMonthAgo);
+            double indexProgressThreeMonthAgo = getRateProgress(stockIndex, endOfThreeMonthAgo, endOfFourMonthAgo);
 
-        return reversalList;
+            List<Double> reversalList = new ArrayList<>();
+            reversalList.add(symbolProgressLastMonth - indexProgressLastMonth);
+            reversalList.add(symbolProgressTwoMonthAgo - indexProgressTwoMonthAgo);
+            reversalList.add(symbolProgressThreeMonthAgo - indexProgressThreeMonthAgo);
+
+            return reversalList;
+        } else {
+            List<Double> reversalList = new ArrayList<>();
+            reversalList.add(-999.0);
+            return reversalList;
+        }
+
     }
 
     /**
@@ -217,33 +227,36 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     private double getRateProgress(String symbol, LocalDate baseDate, LocalDate compareDate) {
         try {
-            // Fetch data
-            LocalDate baseDateMinus = baseDate.minusDays(1);
+            if (symbol != null && baseDate != null && compareDate != null) {
+                // Fetch data
+                LocalDate baseDateMinus = baseDate.minusDays(1);
 
-            List<HistoricalDataQuote> ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
-            while (ratesToday.size() < 1) {
-                baseDateMinus = baseDateMinus.minusDays(1);
-                ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
+                List<HistoricalDataQuote> ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
+                while (ratesToday.size() < 1) {
+                    baseDateMinus = baseDateMinus.minusDays(1);
+                    ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
+                }
+
+                // Find data for compareDate
+                LocalDate compareDateMinus = compareDate.minusDays(1);
+
+                List<HistoricalDataQuote> ratesCompareDate = getHistoricalExchangeRates(symbol, compareDateMinus.format(dtf), compareDate.format(dtf));
+                while (ratesCompareDate.size() < 1) {
+                    compareDateMinus = compareDateMinus.minusDays(1);
+                    ratesCompareDate = getHistoricalExchangeRates(symbol, compareDateMinus.format(dtf), compareDate.format(dtf));
+                }
+
+                double closeToday = ratesToday.get(0).getClose();
+                log.info("closeToday: " + closeToday);
+                double closeCompareDate = ratesCompareDate.get(0).getClose();
+                log.info("closeCompareDate: " + closeCompareDate);
+
+                double rateProgress = (closeToday - closeCompareDate) / closeCompareDate * 100;
+                log.info("rateProgress: " + rateProgress);
+
+                return rateProgress;
             }
-
-            // Find data for compareDate
-            LocalDate compareDateMinus = compareDate.minusDays(1);
-
-            List<HistoricalDataQuote> ratesCompareDate = getHistoricalExchangeRates(symbol, compareDateMinus.format(dtf), compareDate.format(dtf));
-            while (ratesCompareDate.size() < 1) {
-                compareDateMinus = compareDateMinus.minusDays(1);
-                ratesCompareDate = getHistoricalExchangeRates(symbol, compareDateMinus.format(dtf), compareDate.format(dtf));
-            }
-
-            double closeToday = ratesToday.get(0).getClose();
-            log.info("closeToday: " + closeToday);
-            double closeCompareDate = ratesCompareDate.get(0).getClose();
-            log.info("closeCompareDate: " + closeCompareDate);
-
-            double rateProgress = (closeToday - closeCompareDate) / closeCompareDate * 100;
-            log.info("rateProgress: " + rateProgress);
-
-            return rateProgress;
+            return -9999;
         } catch (ParseException e) {
             return -9999;
         }

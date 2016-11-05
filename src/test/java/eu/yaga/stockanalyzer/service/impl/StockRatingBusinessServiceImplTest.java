@@ -37,6 +37,7 @@ public class StockRatingBusinessServiceImplTest {
         reversalList.add(2.0);
         reversalList.add(3.0);
         fd.setReversal3Month(reversalList);
+        fd.setEarningsRevision(6);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(1.1);
@@ -55,7 +56,8 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
         Assert.assertEquals("ProfitGrowth", 10, fd.getProfitGrowth(), 0);
         Assert.assertEquals("ProfitGrowthRating", 1, fd.getProfitGrowthRating());
-        Assert.assertEquals("OverallRating", 11, fd.getOverallRating());
+        Assert.assertEquals("EarningsRevisionRating", 1, fd.getEarningsRevisionRating());
+        Assert.assertEquals("OverallRating", 12, fd.getOverallRating());
     }
 
     @Test
@@ -75,6 +77,7 @@ public class StockRatingBusinessServiceImplTest {
         reversalList.add(-2.0);
         reversalList.add(3.0);
         fd.setReversal3Month(reversalList);
+        fd.setEarningsRevision(0);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(0.0);
@@ -100,6 +103,7 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("Reversal3MonthRating", 0, fd.getReversal3MonthRating());
         Assert.assertEquals("ProfitGrowth", 1.0, fd.getProfitGrowth(), 0.00001);
         Assert.assertEquals("ProfitGrowthRating", 0, fd.getProfitGrowthRating());
+        Assert.assertEquals("EarningsRevisionRating", 0, fd.getEarningsRevisionRating());
         Assert.assertEquals("OverallRating", 0, fd.getOverallRating());
     }
 
@@ -120,6 +124,7 @@ public class StockRatingBusinessServiceImplTest {
         reversalList.add(-2.0);
         reversalList.add(-3.0);
         fd.setReversal3Month(reversalList);
+        fd.setEarningsRevision(-6);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(-1.1);
@@ -138,7 +143,8 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("Reversal3MonthRating", -1, fd.getReversal3MonthRating());
         Assert.assertEquals("ProfitGrowth", -10, fd.getProfitGrowth(), 0);
         Assert.assertEquals("ProfitGrowthRating", -1, fd.getProfitGrowthRating());
-        Assert.assertEquals("OverallRating", -11, fd.getOverallRating());
+        Assert.assertEquals("EarningsRevisionRating", -1, fd.getEarningsRevisionRating());
+        Assert.assertEquals("OverallRating", -12, fd.getOverallRating());
     }
 
     @Test

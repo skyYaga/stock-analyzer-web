@@ -37,6 +37,7 @@ public class FundamentalData {
     private double rateProgress1year;
     private List<Double> reversal3Month;
     private double profitGrowth;
+    private double earningsRevision;
 
     private double analystEstimation;
 
@@ -53,6 +54,7 @@ public class FundamentalData {
     private int rateMomentumRating;
     private int reversal3MonthRating;
     private int profitGrowthRating;
+    private int earningsRevisionRating;
 
     public String getId() {
         return id;
@@ -420,6 +422,22 @@ public class FundamentalData {
 
     public void setProfitGrowthRating(int profitGrowthRating) {
         this.profitGrowthRating = profitGrowthRating;
+    }
+
+    public double getEarningsRevision() {
+        return earningsRevision;
+    }
+
+    public void setEarningsRevision(double earningsRevision) {
+        this.earningsRevision = earningsRevision;
+    }
+
+    public int getEarningsRevisionRating() {
+        return earningsRevisionRating;
+    }
+
+    public void setEarningsRevisionRating(int earningsRevisionRating) {
+        this.earningsRevisionRating = earningsRevisionRating;
     }
 
     @Override

@@ -60,6 +60,7 @@ class StockDetailController {
         workingFundamentalData.setStockIndex(fundamentalData.getStockIndex());
         workingFundamentalData.setLastQuarterlyFigures(fundamentalData.getLastQuarterlyFigures());
         workingFundamentalData.setNextQuarterlyFigures(fundamentalData.getNextQuarterlyFigures());
+        workingFundamentalData.setEarningsRevision(fundamentalData.getEarningsRevision());
 
         workingFundamentalData = stockRatingBusinessService.rate(workingFundamentalData);
         fundamentalDataRepository.save(workingFundamentalData);

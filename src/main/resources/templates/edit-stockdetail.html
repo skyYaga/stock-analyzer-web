@@ -40,6 +40,11 @@
                     <td>yyyy-MM-dd</td>
                     <td><input type="date" th:field="*{nextQuarterlyFigures}" /></td>
                 </tr>
+                <tr>
+                    <td>Gewinnrevisionen</td>
+                    <td>positiv: größer 5 / negativ: kleiner -5</td>
+                    <td><input type="number" step="0.01" th:field="*{earningsRevision}" /></td>
+                </tr>
             </tbody>
         </table>
 
