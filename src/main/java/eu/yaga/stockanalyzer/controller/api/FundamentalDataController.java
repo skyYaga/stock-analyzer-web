@@ -54,7 +54,7 @@ class FundamentalDataController {
      * @return stock symbols
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public HashSet<String> getCachedSymbols() throws ParseException {
+    public HashSet<FundamentalData> getCachedSymbols() throws ParseException {
         Query query = new Query();
         query.fields().include("symbol");
         List<FundamentalData> fundamentalDataList = mongoTemplate.find(query, FundamentalData.class);
@@ -62,7 +62,13 @@ class FundamentalDataController {
         for (FundamentalData data : fundamentalDataList) {
             symbols.add(data.getSymbol());
         }
-        return symbols;
+
+        HashSet<FundamentalData> sortedFundamentalDataList = new HashSet<>();
+        for (String symbol : symbols) {
+            sortedFundamentalDataList.add(fundamentalDataRepository.findBySymbolOrderByDateDesc(symbol));
+        }
+
+        return sortedFundamentalDataList;
     }
 
     /**
@@ -102,6 +108,17 @@ class FundamentalDataController {
         log.info("SAVED: " + saved);
 
         return fundamentalData;
+    }
+
+    /**
+     * Delete a symbol
+     * @param symbol the stocks symbol
+     */
+    @RequestMapping(value = "/{symbol}/delete", method = RequestMethod.DELETE)
+    public void deleteFundamentalData(@PathVariable String symbol) {
+        log.info("Deleting " + symbol);
+        Long deleteCount = fundamentalDataRepository.deleteBySymbol(symbol);
+        log.info("Deleted " + deleteCount + " entries.");
     }
 
     /**

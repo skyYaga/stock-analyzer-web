@@ -38,8 +38,9 @@ public class FundamentalData {
     private List<Double> reversal3Month;
     private double profitGrowth;
     private double earningsRevision;
-
     private double analystEstimation;
+    private String name;
+    private List<String> urls = new ArrayList<>();
 
     private int overallRating;
     private int roeRating;
@@ -438,6 +439,22 @@ public class FundamentalData {
 
     public void setEarningsRevisionRating(int earningsRevisionRating) {
         this.earningsRevisionRating = earningsRevisionRating;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getUrls() {
+        return urls;
+    }
+
+    public void setUrls(List<String> urls) {
+        this.urls = urls;
     }
 
     @Override

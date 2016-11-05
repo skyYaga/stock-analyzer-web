@@ -1,5 +1,6 @@
 package eu.yaga.stockanalyzer.controller.client;
 
+import eu.yaga.stockanalyzer.model.FundamentalData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +17,9 @@ public class OverviewController {
     @RequestMapping({"/", "/overview"})
     public String overview(Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        HashSet<String> symbols = restTemplate.getForObject("http://localhost:8080/api/fundamental-data", HashSet.class);
+        HashSet<FundamentalData> fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data", HashSet.class);
 
-        model.addAttribute("symbols", symbols);
+        model.addAttribute("fundamentalData", fundamentalData);
 
         return "overview";
     }

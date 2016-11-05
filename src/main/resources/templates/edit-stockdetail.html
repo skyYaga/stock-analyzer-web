@@ -7,7 +7,7 @@
 <body>
     <h1 th:text="${fundamentalData.symbol} + ' bearbeiten'"></h1>
 
-    <form action="#" th:action="@{/stockdetail}" th:object="${fundamentalData}" method="post">
+    <form action="#" th:action="@{/stockdetail/edit}" th:object="${fundamentalData}" method="post">
         <table>
             <thead>
                 <th>Kennzahl</th>
@@ -19,6 +19,11 @@
                     <td>Symbol</td>
                     <td></td>
                     <td><input type="text" th:value="${fundamentalData.symbol}" th:field="*{symbol}" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td></td>
+                    <td><input type="text" th:field="*{name}"/></td>
                 </tr>
                 <tr>
                     <td>Analystenmeinungen</td>
@@ -48,7 +53,29 @@
             </tbody>
         </table>
 
-        <p><input type="submit" value="Submit"/></p>
+        <table>
+            <thead>
+            <th>Nr</th>
+            <th>URL</th>
+            <th>
+                <button type="submit" name="addURL" th:text="'URL hinzufügen'">URL hinzufügen</button>
+            </th>
+            </thead>
+            <tbody>
+            <tr th:each="url,urlStat : *{urls}">
+                <td th:text="${urlStat.count}">1</td>
+                <td>
+                    <input type="text" th:field="*{urls[__${urlStat.index}__]}" />
+                </td>
+                <td>
+                    <button type="submit" name="removeURL"
+                            th:value="${urlStat.index}" th:text="'Löschen'">Löschen</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <p><input type="submit" name="stockSubmit" value="Submit"/></p>
     </form>
 
     <p><a th:text="'Zurück zu ' + ${fundamentalData.symbol}" th:href="'/stockdetail?symbol=' + ${fundamentalData.symbol}"></a></p>

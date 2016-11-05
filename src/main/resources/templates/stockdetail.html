@@ -5,10 +5,13 @@
     <title>Stock Detail</title>
 </head>
 <body>
-    <h1 th:text="'Details für ' + ${fundamentalData.symbol}"></h1>
+    <h1 th:text="'Details für ' + ${fundamentalData.name} + ' (' + ${fundamentalData.symbol} + ')'"></h1>
 
     <p th:text="'Daten vom ' + ${fundamentalData.date}"></p>
     <p th:text="'Index: ' + ${fundamentalData.stockIndex}"></p>
+    <ul th:each="url : ${fundamentalData.urls}">
+        <li><a th:href="${url}" th:text="${url}" target="_blank" rel="noopener noreferrer"></a></li>
+    </ul>
 
     <table>
         <thead>
@@ -110,6 +113,7 @@
     </table>
 
     <p><a th:text="${fundamentalData.symbol} + ' bearbeiten'" th:href="'/stockdetail/edit?symbol=' + ${fundamentalData.symbol}"></a></p>
+    <p><a th:text="${fundamentalData.symbol} + ' neu bewerten'" th:href="'/stockdetail/rate?symbol=' + ${fundamentalData.symbol}"></a></p>
     <p><a href="/overview">Zurück zur Übersicht</a></p>
 </body>
 </html>

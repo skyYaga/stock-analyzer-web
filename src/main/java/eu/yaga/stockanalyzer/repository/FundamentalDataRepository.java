@@ -8,4 +8,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface FundamentalDataRepository extends MongoRepository<FundamentalData, String> {
     FundamentalData findBySymbolOrderByDateDesc(String symbol);
+    Long deleteBySymbol(String symbol);
 }
