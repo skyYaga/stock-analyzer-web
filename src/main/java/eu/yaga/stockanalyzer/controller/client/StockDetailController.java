@@ -44,11 +44,14 @@ class StockDetailController {
     }
 
     @RequestMapping(value = "/stockdetail/edit", method = RequestMethod.GET)
-    public String editStock(@RequestParam(value = "symbol") String symbol, Model model) {
-        model.addAttribute("symbol", symbol);
+    public String editStock(@RequestParam(value = "symbol", required = false) String symbol, Model model) {
+        FundamentalData fundamentalData = new FundamentalData();
+        if (symbol != null) {
+            model.addAttribute("symbol", symbol);
 
-        RestTemplate restTemplate = new RestTemplate();
-        FundamentalData fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
+            RestTemplate restTemplate = new RestTemplate();
+            fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
+        }
 
         model.addAttribute("fundamentalData", fundamentalData);
 
@@ -59,6 +62,10 @@ class StockDetailController {
     public String stockSubmit(@ModelAttribute FundamentalData fundamentalData, Model model) {
         log.info("in stockSubmit");
         FundamentalData workingFundamentalData = fundamentalDataRepository.findBySymbolOrderByDateDesc(fundamentalData.getSymbol());
+        if (workingFundamentalData == null) {
+            workingFundamentalData = new FundamentalData();
+            workingFundamentalData.setSymbol(fundamentalData.getSymbol());
+        }
         workingFundamentalData.setAnalystEstimation(fundamentalData.getAnalystEstimation());
         workingFundamentalData.setStockIndex(fundamentalData.getStockIndex());
         workingFundamentalData.setLastQuarterlyFigures(fundamentalData.getLastQuarterlyFigures());

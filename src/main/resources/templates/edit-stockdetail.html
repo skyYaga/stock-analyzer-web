@@ -5,7 +5,8 @@
     <title>Stock Detail</title>
 </head>
 <body>
-    <h1 th:text="${fundamentalData.symbol} + ' bearbeiten'"></h1>
+    <h1 th:if="${fundamentalData.symbol != null}" th:text="${fundamentalData.symbol} + ' bearbeiten'"></h1>
+    <h1 th:if="${fundamentalData.symbol == null}" th:text="'Neue Aktie hinzufügen'"></h1>
 
     <form action="#" th:action="@{/stockdetail/edit}" th:object="${fundamentalData}" method="post">
         <table>
@@ -18,7 +19,12 @@
                 <tr>
                     <td>Symbol</td>
                     <td></td>
-                    <td><input type="text" th:value="${fundamentalData.symbol}" th:field="*{symbol}" readonly="readonly" /></td>
+                    <td>
+                        <input th:if="${fundamentalData.symbol != null}" type="text"
+                               th:value="${fundamentalData.symbol}" th:field="*{symbol}" readonly="readonly" />
+                        <input th:if="${fundamentalData.symbol == null}" type="text"
+                               th:value="${fundamentalData.symbol}" th:field="*{symbol}" />
+                    </td>
                 </tr>
                 <tr>
                     <td>Name</td>
@@ -78,6 +84,9 @@
         <p><input type="submit" name="stockSubmit" value="Submit"/></p>
     </form>
 
-    <p><a th:text="'Zurück zu ' + ${fundamentalData.symbol}" th:href="'/stockdetail?symbol=' + ${fundamentalData.symbol}"></a></p>
+    <p>
+        <a th:if="${fundamentalData.symbol != null}" th:text="'Zurück zu ' + ${fundamentalData.symbol}" th:href="'/stockdetail?symbol=' + ${fundamentalData.symbol}"></a>
+        <a th:if="${fundamentalData.symbol == null}" th:text="'Zurück zur Übersicht'" th:href="'/overview'"></a>
+    </p>
 </body>
 </html>
