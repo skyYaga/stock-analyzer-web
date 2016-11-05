@@ -24,6 +24,8 @@ public class FundamentalData {
     private double ebit;
     private double equityRatio;
     private double ask;
+    private double epsCurrentYear;
+    private double epsNextYear;
     private double perCurrent;
     private double per5years;
     @DateTimeFormat(pattern="yyyy-MM-dd")
@@ -34,6 +36,7 @@ public class FundamentalData {
     private double rateProgress6month;
     private double rateProgress1year;
     private List<Double> reversal3Month;
+    private double profitGrowth;
 
     private double analystEstimation;
 
@@ -49,6 +52,7 @@ public class FundamentalData {
     private int rateProgress1yearRating;
     private int rateMomentumRating;
     private int reversal3MonthRating;
+    private int profitGrowthRating;
 
     public String getId() {
         return id;
@@ -160,6 +164,22 @@ public class FundamentalData {
      */
     public void setAsk(double ask) {
         this.ask = ask;
+    }
+
+    public double getEpsCurrentYear() {
+        return epsCurrentYear;
+    }
+
+    public void setEpsCurrentYear(double epsCurrentYear) {
+        this.epsCurrentYear = epsCurrentYear;
+    }
+
+    public double getEpsNextYear() {
+        return epsNextYear;
+    }
+
+    public void setEpsNextYear(double epsNextYear) {
+        this.epsNextYear = epsNextYear;
     }
 
     /**
@@ -384,6 +404,22 @@ public class FundamentalData {
 
     public void setReversal3MonthRating(int reversal3MonthRating) {
         this.reversal3MonthRating = reversal3MonthRating;
+    }
+
+    public double getProfitGrowth() {
+        return profitGrowth;
+    }
+
+    public void setProfitGrowth(double profitGrowth) {
+        this.profitGrowth = profitGrowth;
+    }
+
+    public int getProfitGrowthRating() {
+        return profitGrowthRating;
+    }
+
+    public void setProfitGrowthRating(int profitGrowthRating) {
+        this.profitGrowthRating = profitGrowthRating;
     }
 
     @Override

@@ -62,6 +62,10 @@ public class OnVistaParser {
         double currentRate = currentStockQuotesService.getCurrentRate(symbol);
         fundamentalData.setAsk(currentRate);
 
+        // Gewinn pro Aktie
+        fundamentalData.setEpsNextYear(Double.parseDouble(earningsPerShare.get(fundamentalData.getNextYear()).replace(",", ".")));
+        fundamentalData.setEpsCurrentYear(Double.parseDouble(earningsPerShare.get(fundamentalData.getCurrentYear()).replace(",", ".")));
+
         // 5 Jahre
         fundamentalData.setPer5years(calculatePer5years(currentRate, earningsPerShare));
         //aktuell

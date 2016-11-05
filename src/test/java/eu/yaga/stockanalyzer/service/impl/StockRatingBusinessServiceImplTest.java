@@ -19,10 +19,6 @@ public class StockRatingBusinessServiceImplTest {
 
     private StockRatingBusinessServiceImpl service;
 
-    public void setUpGood() {
-
-    }
-
     @Test
     public void testGoodRating() {
 
@@ -30,6 +26,8 @@ public class StockRatingBusinessServiceImplTest {
         fd.setRoe(21);
         fd.setEbit(13);
         fd.setEquityRatio(26);
+        fd.setEpsCurrentYear(10);
+        fd.setEpsNextYear(11);
         fd.setPer5years(11);
         fd.setPerCurrent(11);
         fd.setAnalystEstimation(2.6);
@@ -49,13 +47,15 @@ public class StockRatingBusinessServiceImplTest {
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", 10, fd.getOverallRating());
         Assert.assertEquals("RateProgress6month", 6.0, fd.getRateProgress6month(), 0);
         Assert.assertEquals("RateProgress6monthRating", 1, fd.getRateProgress6monthRating());
         Assert.assertEquals("RateProgress1year", 7.0, fd.getRateProgress1year(), 0);
         Assert.assertEquals("RateProgress1yearRating", 1, fd.getRateProgress1yearRating());
         Assert.assertEquals("Reversal3MonthRating", 1, fd.getReversal3MonthRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
+        Assert.assertEquals("ProfitGrowth", 10, fd.getProfitGrowth(), 0);
+        Assert.assertEquals("ProfitGrowthRating", 1, fd.getProfitGrowthRating());
+        Assert.assertEquals("OverallRating", 11, fd.getOverallRating());
     }
 
     @Test
@@ -64,6 +64,8 @@ public class StockRatingBusinessServiceImplTest {
         fd.setRoe(15);
         fd.setEbit(9);
         fd.setEquityRatio(20);
+        fd.setEpsCurrentYear(10);
+        fd.setEpsNextYear(10.1);
         fd.setPer5years(14);
         fd.setPerCurrent(14);
         fd.setAnalystEstimation(2);
@@ -96,6 +98,8 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("RateProgress1yearRating", 0, fd.getRateProgress1yearRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
         Assert.assertEquals("Reversal3MonthRating", 0, fd.getReversal3MonthRating());
+        Assert.assertEquals("ProfitGrowth", 1.0, fd.getProfitGrowth(), 0.00001);
+        Assert.assertEquals("ProfitGrowthRating", 0, fd.getProfitGrowthRating());
         Assert.assertEquals("OverallRating", 0, fd.getOverallRating());
     }
 
@@ -105,6 +109,8 @@ public class StockRatingBusinessServiceImplTest {
         fd.setRoe(9);
         fd.setEbit(5);
         fd.setEquityRatio(14);
+        fd.setEpsCurrentYear(10);
+        fd.setEpsNextYear(9);
         fd.setPer5years(17);
         fd.setPerCurrent(17);
         fd.setAnalystEstimation(1.5);
@@ -130,7 +136,9 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("RateProgress1yearRating", -1, fd.getRateProgress1yearRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
         Assert.assertEquals("Reversal3MonthRating", -1, fd.getReversal3MonthRating());
-        Assert.assertEquals("OverallRating", -10, fd.getOverallRating());
+        Assert.assertEquals("ProfitGrowth", -10, fd.getProfitGrowth(), 0);
+        Assert.assertEquals("ProfitGrowthRating", -1, fd.getProfitGrowthRating());
+        Assert.assertEquals("OverallRating", -11, fd.getOverallRating());
     }
 
     @Test

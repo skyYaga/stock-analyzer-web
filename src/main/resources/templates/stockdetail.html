@@ -91,6 +91,16 @@
                 <td th:text="${fundamentalData.reversal3MonthRating}"></td>
             </tr>
             <tr>
+                <td>Gewinnwachstum</td>
+                <td></td>
+                <td>
+                    <span th:text="'Gewinn Aktuelles Jahr: ' + ${fundamentalData.epsCurrentYear}"></span><br/>
+                    <span th:text="'Gewinn Nächstes Jahr: ' + ${fundamentalData.epsNextYear}"></span><br/>
+                    <span th:text="'Gewinnwachstum: ' + ${fundamentalData.profitGrowth}"></span><br/>
+                </td>
+                <td th:text="${fundamentalData.profitGrowthRating}"></td>
+            </tr>
+            <tr>
                 <td>Gesamtrating</td>
                 <td></td>
                 <td></td>

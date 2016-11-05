@@ -36,8 +36,27 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
         fd = rateRateProgress1year(fd);
         fd = rateRateMomentum(fd);
         fd = rateReversal3Month(fd);
+        fd = rateProfitGrowth(fd);
 
         fd = rateOverall(fd);
+
+        return fd;
+    }
+
+    private FundamentalData rateProfitGrowth(FundamentalData fd) {
+        double epsCurrentYear = fd.getEpsCurrentYear();
+        double epsNextYear = fd.getEpsNextYear();
+
+        double profitGrowth = (epsNextYear - epsCurrentYear) / epsCurrentYear * 100;
+        fd.setProfitGrowth(profitGrowth);
+
+        if (profitGrowth > 5) {
+            fd.setProfitGrowthRating(1);
+        } else if (profitGrowth < -5) {
+            fd.setProfitGrowthRating(-1);
+        } else {
+            fd.setProfitGrowthRating(0);
+        }
 
         return fd;
     }
@@ -154,7 +173,8 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
                 + fd.getRateProgress6monthRating()
                 + fd.getRateProgress1yearRating()
                 + fd.getRateMomentumRating()
-                + fd.getReversal3MonthRating();
+                + fd.getReversal3MonthRating()
+                + fd.getProfitGrowthRating();
 
         fd.setOverallRating(overallRating);
         return fd;
