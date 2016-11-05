@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
@@ -96,7 +95,17 @@ class FundamentalDataController {
         log.info("Got Fundamental Data: " + fundamentalData);
 
         if (fundamentalData != null) {
-            merge(fundamentalData, newFundamentalData);
+            fundamentalData.setSymbol(newFundamentalData.getSymbol());
+            fundamentalData.setDate(newFundamentalData.getDate());
+            fundamentalData.setBusinessYears(newFundamentalData.getBusinessYears());
+            fundamentalData.setRoe(newFundamentalData.getRoe());
+            fundamentalData.setEbit(newFundamentalData.getEbit());
+            fundamentalData.setEquityRatio(newFundamentalData.getEquityRatio());
+            fundamentalData.setAsk(newFundamentalData.getAsk());
+            fundamentalData.setEpsCurrentYear(newFundamentalData.getEpsCurrentYear());
+            fundamentalData.setEpsNextYear(newFundamentalData.getEpsNextYear());
+            fundamentalData.setPer5years(newFundamentalData.getPer5years());
+            fundamentalData.setPerCurrent(newFundamentalData.getPerCurrent());
         } else {
             fundamentalData = newFundamentalData;
         }
@@ -119,37 +128,5 @@ class FundamentalDataController {
         log.info("Deleting " + symbol);
         Long deleteCount = fundamentalDataRepository.deleteBySymbol(symbol);
         log.info("Deleted " + deleteCount + " entries.");
-    }
-
-    /**
-     * Merges new / updated data to an Object
-     * @param obj the base object
-     * @param update the updated object
-     */
-    private void merge(Object obj, Object update){
-        if(!obj.getClass().isAssignableFrom(update.getClass())){
-            return;
-        }
-
-        Method[] methods = obj.getClass().getMethods();
-
-        for(Method fromMethod: methods){
-            if(fromMethod.getDeclaringClass().equals(obj.getClass())
-                    && fromMethod.getName().startsWith("get")){
-
-                String fromName = fromMethod.getName();
-                String toName = fromName.replace("get", "set");
-
-                try {
-                    Method toMethod = obj.getClass().getMethod(toName, fromMethod.getReturnType());
-                    Object value = fromMethod.invoke(update, (Object[])null);
-                    if(value != null){
-                        toMethod.invoke(obj, value);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }
