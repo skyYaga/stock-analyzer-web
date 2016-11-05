@@ -147,7 +147,7 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public double getRateProgress6month(FundamentalData fundamentalData) {
-        return getRateProgress(fundamentalData, ChronoUnit.MONTHS, 6);
+        return getRateProgress(fundamentalData.getSymbol(), 6, ChronoUnit.MONTHS);
     }
 
     /**
@@ -158,25 +158,75 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public double getRateProgress1year(FundamentalData fundamentalData) {
-        return getRateProgress(fundamentalData, ChronoUnit.YEARS, 1);
+        return getRateProgress(fundamentalData.getSymbol(), 1, ChronoUnit.YEARS);
     }
 
-    private double getRateProgress(FundamentalData fundamentalData, ChronoUnit chronoUnit, int amount) {
+    /**
+     * This method calculates the stock progression compared to its index of the last 3 months
+     *
+     * @param fundamentalData of the stock
+     * @return a list with the progression of the last 3 months
+     */
+    @Override
+    public List<Double> getReversal3Month(FundamentalData fundamentalData) {
+        LocalDate lastMonth = LocalDate.now().minusMonths(1);
+        LocalDate twoMonthAgo = LocalDate.now().minusMonths(2);
+        LocalDate threeMonthAgo = LocalDate.now().minusMonths(3);
+        LocalDate fourMonthAgo = LocalDate.now().minusMonths(4);
+
+        LocalDate endOfLastMonth = lastMonth.withDayOfMonth(lastMonth.lengthOfMonth());
+        LocalDate endOfTwoMonthAgo = twoMonthAgo.withDayOfMonth(twoMonthAgo.lengthOfMonth());
+        LocalDate endOfThreeMonthAgo = threeMonthAgo.withDayOfMonth(threeMonthAgo.lengthOfMonth());
+        LocalDate endOfFourMonthAgo = fourMonthAgo.withDayOfMonth(fourMonthAgo.lengthOfMonth());
+
+        double symbolProgressLastMonth = getRateProgress(fundamentalData.getSymbol(), endOfLastMonth, endOfTwoMonthAgo);
+        double symbolProgressTwoMonthAgo = getRateProgress(fundamentalData.getSymbol(), endOfTwoMonthAgo, endOfThreeMonthAgo);
+        double symbolProgressThreeMonthAgo = getRateProgress(fundamentalData.getSymbol(), endOfThreeMonthAgo, endOfFourMonthAgo);
+
+        double indexProgressLastMonth = getRateProgress(fundamentalData.getStockIndex(), endOfLastMonth, endOfTwoMonthAgo);
+        double indexProgressTwoMonthAgo = getRateProgress(fundamentalData.getStockIndex(), endOfTwoMonthAgo, endOfThreeMonthAgo);
+        double indexProgressThreeMonthAgo = getRateProgress(fundamentalData.getStockIndex(), endOfThreeMonthAgo, endOfFourMonthAgo);
+
+        List<Double> reversalList = new ArrayList<>();
+        reversalList.add(symbolProgressLastMonth - indexProgressLastMonth);
+        reversalList.add(symbolProgressTwoMonthAgo - indexProgressTwoMonthAgo);
+        reversalList.add(symbolProgressThreeMonthAgo - indexProgressThreeMonthAgo);
+
+        return reversalList;
+    }
+
+    /**
+     * returns the rate progress from today
+     * @param symbol the symbol
+     * @param amount the amount of units to be subtracted
+     * @param chronoUnit the unit of the amount (days, months, ...)
+     * @return the rate progress
+     */
+    private double getRateProgress(String symbol, int amount, ChronoUnit chronoUnit) {
+        LocalDate today = LocalDate.now();
+        LocalDate compareDate = today.minus(amount, chronoUnit);
+        return getRateProgress(symbol, today, compareDate);
+    }
+
+    /**
+     * returns the rate progress from the base date
+     * @param symbol the symbol
+     * @param baseDate the reference date
+     * @param compareDate the date to compare with
+     * @return the rate progress
+     */
+    private double getRateProgress(String symbol, LocalDate baseDate, LocalDate compareDate) {
         try {
-            String symbol = fundamentalData.getSymbol();
-
             // Fetch data
-            LocalDate today = LocalDate.now();
-            LocalDate todayMinus = today.minusDays(1);
+            LocalDate baseDateMinus = baseDate.minusDays(1);
 
-            List<HistoricalDataQuote> ratesToday = getHistoricalExchangeRates(symbol, todayMinus.format(dtf), today.format(dtf));
+            List<HistoricalDataQuote> ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
             while (ratesToday.size() < 1) {
-                todayMinus = todayMinus.minusDays(1);
-                ratesToday = getHistoricalExchangeRates(symbol, todayMinus.format(dtf), today.format(dtf));
+                baseDateMinus = baseDateMinus.minusDays(1);
+                ratesToday = getHistoricalExchangeRates(symbol, baseDateMinus.format(dtf), baseDate.format(dtf));
             }
 
             // Find data for compareDate
-            LocalDate compareDate = today.minus(amount, chronoUnit);
             LocalDate compareDateMinus = compareDate.minusDays(1);
 
             List<HistoricalDataQuote> ratesCompareDate = getHistoricalExchangeRates(symbol, compareDateMinus.format(dtf), compareDate.format(dtf));

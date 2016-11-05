@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A POJO for fundamental data
@@ -32,6 +33,7 @@ public class FundamentalData {
     private String stockIndex;
     private double rateProgress6month;
     private double rateProgress1year;
+    private List<Double> reversal3Month;
 
     private double analystEstimation;
 
@@ -46,6 +48,7 @@ public class FundamentalData {
     private int rateProgress6monthRating;
     private int rateProgress1yearRating;
     private int rateMomentumRating;
+    private int reversal3MonthRating;
 
     public String getId() {
         return id;
@@ -365,6 +368,22 @@ public class FundamentalData {
 
     public void setRateMomentumRating(int rateMomentumRating) {
         this.rateMomentumRating = rateMomentumRating;
+    }
+
+    public List<Double> getReversal3Month() {
+        return reversal3Month;
+    }
+
+    public void setReversal3Month(List<Double> reversal3Month) {
+        this.reversal3Month = reversal3Month;
+    }
+
+    public int getReversal3MonthRating() {
+        return reversal3MonthRating;
+    }
+
+    public void setReversal3MonthRating(int reversal3MonthRating) {
+        this.reversal3MonthRating = reversal3MonthRating;
     }
 
     @Override

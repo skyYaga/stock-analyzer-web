@@ -5,7 +5,9 @@ import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,20 +34,27 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPerCurrent(11);
         fd.setAnalystEstimation(2.6);
         fd.setLastQuarterlyFigures(new Date());
+        List<Double> reversalList = new ArrayList<>();
+        reversalList.add(1.0);
+        reversalList.add(2.0);
+        reversalList.add(3.0);
+        fd.setReversal3Month(reversalList);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(1.1);
         when(mockedRateService.getRateProgress6month(fd)).thenReturn(6.0);
         when(mockedRateService.getRateProgress1year(fd)).thenReturn(7.0);
+        when(mockedRateService.getReversal3Month(fd)).thenReturn(reversalList);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
 
-        Assert.assertEquals("OverallRating", 9, fd.getOverallRating());
+        Assert.assertEquals("OverallRating", 10, fd.getOverallRating());
         Assert.assertEquals("RateProgress6month", 6.0, fd.getRateProgress6month(), 0);
         Assert.assertEquals("RateProgress6monthRating", 1, fd.getRateProgress6monthRating());
         Assert.assertEquals("RateProgress1year", 7.0, fd.getRateProgress1year(), 0);
         Assert.assertEquals("RateProgress1yearRating", 1, fd.getRateProgress1yearRating());
+        Assert.assertEquals("Reversal3MonthRating", 1, fd.getReversal3MonthRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
     }
 
@@ -59,11 +68,17 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPerCurrent(14);
         fd.setAnalystEstimation(2);
         fd.setLastQuarterlyFigures(new Date());
+        List<Double> reversalList = new ArrayList<>();
+        reversalList.add(-1.0);
+        reversalList.add(-2.0);
+        reversalList.add(3.0);
+        fd.setReversal3Month(reversalList);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(0.0);
         when(mockedRateService.getRateProgress6month(fd)).thenReturn(2.0);
         when(mockedRateService.getRateProgress1year(fd)).thenReturn(-2.0);
+        when(mockedRateService.getReversal3Month(fd)).thenReturn(reversalList);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
@@ -80,6 +95,7 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("RateProgress1year", -2.0, fd.getRateProgress1year(), 0);
         Assert.assertEquals("RateProgress1yearRating", 0, fd.getRateProgress1yearRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
+        Assert.assertEquals("Reversal3MonthRating", 0, fd.getReversal3MonthRating());
         Assert.assertEquals("OverallRating", 0, fd.getOverallRating());
     }
 
@@ -93,11 +109,17 @@ public class StockRatingBusinessServiceImplTest {
         fd.setPerCurrent(17);
         fd.setAnalystEstimation(1.5);
         fd.setLastQuarterlyFigures(new Date());
+        List<Double> reversalList = new ArrayList<>();
+        reversalList.add(-1.0);
+        reversalList.add(-2.0);
+        reversalList.add(-3.0);
+        fd.setReversal3Month(reversalList);
 
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getReactionToQuarterlyFigures(fd)).thenReturn(-1.1);
         when(mockedRateService.getRateProgress6month(fd)).thenReturn(-6.0);
         when(mockedRateService.getRateProgress1year(fd)).thenReturn(-7.0);
+        when(mockedRateService.getReversal3Month(fd)).thenReturn(reversalList);
         service = new StockRatingBusinessServiceImpl(mockedRateService);
 
         fd = service.rate(fd);
@@ -107,7 +129,8 @@ public class StockRatingBusinessServiceImplTest {
         Assert.assertEquals("RateProgress1year", -7.0, fd.getRateProgress1year(), 0);
         Assert.assertEquals("RateProgress1yearRating", -1, fd.getRateProgress1yearRating());
         Assert.assertEquals("RateMomentumRating", 0, fd.getRateMomentumRating());
-        Assert.assertEquals("OverallRating", -9, fd.getOverallRating());
+        Assert.assertEquals("Reversal3MonthRating", -1, fd.getReversal3MonthRating());
+        Assert.assertEquals("OverallRating", -10, fd.getOverallRating());
     }
 
     @Test

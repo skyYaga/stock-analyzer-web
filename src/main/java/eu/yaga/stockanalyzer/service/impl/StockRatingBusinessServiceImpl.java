@@ -4,6 +4,8 @@ import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 
+import java.util.List;
+
 /**
  * Implementation of StockRatingBusinessService
  */
@@ -33,8 +35,37 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
         fd = rateRateProgress6month(fd);
         fd = rateRateProgress1year(fd);
         fd = rateRateMomentum(fd);
+        fd = rateReversal3Month(fd);
 
         fd = rateOverall(fd);
+
+        return fd;
+    }
+
+    private FundamentalData rateReversal3Month(FundamentalData fd) {
+        List<Double> reversal3Month = historicalExchangeRateService.getReversal3Month(fd);
+        fd.setReversal3Month(reversal3Month);
+
+        int score = 0;
+        if (reversal3Month != null) {
+            for (double reversal : reversal3Month) {
+                if (reversal > 0) {
+                    score++;
+                } else if (reversal < 0) {
+                    score--;
+                }
+            }
+        }
+
+        switch (score) {
+            case 3:
+                fd.setReversal3MonthRating(1);
+                break;
+            case -3:
+                fd.setReversal3MonthRating(-1);
+                break;
+            default: fd.setReversal3MonthRating(0);
+        }
 
         return fd;
     }
@@ -122,7 +153,8 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
                 + fd.getLastQuarterlyFiguresRating()
                 + fd.getRateProgress6monthRating()
                 + fd.getRateProgress1yearRating()
-                + fd.getRateMomentumRating();
+                + fd.getRateMomentumRating()
+                + fd.getReversal3MonthRating();
 
         fd.setOverallRating(overallRating);
         return fd;

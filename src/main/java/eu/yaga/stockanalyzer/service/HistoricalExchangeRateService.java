@@ -45,4 +45,11 @@ public interface HistoricalExchangeRateService {
      * @return the progression in percent
      */
     double getRateProgress1year(FundamentalData fundamentalData);
+
+    /**
+     * This method calculates the stock progression compared to its index of the last 3 months
+     * @param fundamentalData of the stock
+     * @return a list with the progression of the last 3 months
+     */
+    List<Double> getReversal3Month(FundamentalData fundamentalData);
 }
