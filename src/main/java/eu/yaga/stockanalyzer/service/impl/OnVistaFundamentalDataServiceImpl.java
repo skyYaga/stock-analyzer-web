@@ -36,10 +36,10 @@ public class OnVistaFundamentalDataServiceImpl implements FundamentalDataService
      * @return fundamental data
      */
     @Override
-    public FundamentalData getFundamentalData(String symbol) {
+    public FundamentalData getFundamentalData(String symbol, FundamentalData fundamentalData) {
         URL url = getUrlForSymbol(symbol);
         String html = queryHTML(url);
-        return onVistaParser.getFundamentalData(html, symbol);
+        return onVistaParser.getFundamentalData(html, symbol, fundamentalData);
     }
 
     private URL getUrlForSymbol(String symbol) {

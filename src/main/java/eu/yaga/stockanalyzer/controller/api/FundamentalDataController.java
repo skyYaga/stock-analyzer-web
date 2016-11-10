@@ -91,7 +91,7 @@ class FundamentalDataController {
     public FundamentalData refreshFundamentalData(@PathVariable String symbol) throws ParseException {
         FundamentalData fundamentalData = fundamentalDataRepository.findBySymbolOrderByDateDesc(symbol);
 
-        FundamentalData newFundamentalData = fundamentalDataService.getFundamentalData(symbol);
+        FundamentalData newFundamentalData = fundamentalDataService.getFundamentalData(symbol, fundamentalData);
         log.info("Got Fundamental Data: " + fundamentalData);
 
         if (fundamentalData != null) {

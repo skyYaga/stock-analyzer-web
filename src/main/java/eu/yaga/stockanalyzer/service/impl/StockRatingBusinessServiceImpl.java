@@ -1,6 +1,7 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.model.StockType;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 
@@ -227,26 +228,40 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
     private FundamentalData rateEquityRatio(FundamentalData fd) {
         double equityRatio = fd.getEquityRatio();
 
-        if (equityRatio > 25) {
-            fd.setEquityRatioRating(1);
-        } else if (equityRatio < 15) {
-            fd.setEquityRatioRating(-1);
+        if (fd.getStockType() == StockType.LARGE_FINANCE) {
+            if (equityRatio > 10) {
+                fd.setEquityRatioRating(1);
+            } else if (equityRatio < 5) {
+                fd.setEquityRatioRating(-1);
+            } else {
+                fd.setEquityRatioRating(0);
+            }
         } else {
-            fd.setEquityRatioRating(0);
+            if (equityRatio > 25) {
+                fd.setEquityRatioRating(1);
+            } else if (equityRatio < 15) {
+                fd.setEquityRatioRating(-1);
+            } else {
+                fd.setEquityRatioRating(0);
+            }
         }
 
         return fd;
     }
 
     private FundamentalData rateEbit(FundamentalData fd) {
-        double ebit = fd.getEbit();
-
-        if (ebit > 12) {
-            fd.setEbitRating(1);
-        } else if (ebit < 6) {
-            fd.setEbitRating(-1);
-        } else {
+        if (fd.getStockType() == StockType.LARGE_FINANCE) {
             fd.setEbitRating(0);
+        } else {
+            double ebit = fd.getEbit();
+
+            if (ebit > 12) {
+                fd.setEbitRating(1);
+            } else if (ebit < 6) {
+                fd.setEbitRating(-1);
+            } else {
+                fd.setEbitRating(0);
+            }
         }
 
         return fd;

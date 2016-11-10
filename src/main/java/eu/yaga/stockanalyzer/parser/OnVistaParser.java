@@ -1,6 +1,7 @@
 package eu.yaga.stockanalyzer.parser;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.model.StockType;
 import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.service.CurrentStockQuotesService;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
@@ -33,14 +34,20 @@ public class OnVistaParser {
 
     private String html;
     private String symbol;
-    private FundamentalData fundamentalData = new FundamentalData();
+    private FundamentalData fundamentalData;
     private Matcher matcher;
 
     public OnVistaParser() {}
 
-    public FundamentalData getFundamentalData(String html, String symbol) {
+    public FundamentalData getFundamentalData(String html, String symbol, FundamentalData fd) {
         this.html = html;
         this.symbol = symbol;
+
+        if (fd == null) {
+            fundamentalData = new FundamentalData();
+        } else {
+            fundamentalData = fd;
+        }
 
         Matcher matcher;
 
@@ -342,8 +349,12 @@ public class OnVistaParser {
 
         String roe = roeMap.get(fundamentalData.getLastYear());
         if (roe == null) {
-            log.info(roeMap.get("roe two years ago: " + fundamentalData.getLastYear()));
-            roe = roeMap.get(fundamentalData.getTwoYearsAgo());
+            log.info("Trying " + fundamentalData.getLastYear() + "e as last year...");
+            roe = roeMap.get(fundamentalData.getLastYear() + "e");
+            if (roe == null) {
+                log.info(roeMap.get("roe two years ago: " + fundamentalData.getLastYear()));
+                roe = roeMap.get(fundamentalData.getTwoYearsAgo());
+            }
         }
         return Double.parseDouble(roe.replace("%", "").replace(",", "."));
     }
@@ -386,8 +397,12 @@ public class OnVistaParser {
 
         String mc = mcMap.get(fundamentalData.getLastYear());
         if (mc == null) {
-            log.info(mcMap.get("mc two years ago: " + fundamentalData.getLastYear()));
-            mc = mcMap.get(fundamentalData.getTwoYearsAgo());
+            log.info("Trying " + fundamentalData.getLastYear() + "e as last year...");
+            mc = mcMap.get(fundamentalData.getLastYear() + "e");
+            if (mc == null) {
+                log.info(mcMap.get("mc two years ago: " + fundamentalData.getLastYear()));
+                mc = mcMap.get(fundamentalData.getTwoYearsAgo());
+            }
         }
 
         NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
@@ -407,43 +422,50 @@ public class OnVistaParser {
      * @param profitabilityYears the available years
      */
     private double parseEbit(ArrayList<String> profitabilityYears) {
+        if (fundamentalData.getStockType() == StockType.LARGE_FINANCE) {
+            return 0;
+        } else {
+            Pattern ebitPattern = Pattern.compile("<tr>\\s*<td[^/]*EBIT-Marge</td>((?!</tr>).)*</tr>");
+            matcher = ebitPattern.matcher(html);
+            ArrayList<String> ebitArray = new ArrayList<>();
 
-        Pattern ebitPattern = Pattern.compile("<tr>\\s*<td[^/]*EBIT-Marge</td>((?!</tr>).)*</tr>");
-        matcher = ebitPattern.matcher(html);
-        ArrayList<String> ebitArray = new ArrayList<>();
-
-        while (matcher.find()) {
-            log.info("Matches gefunden!");
-
-            log.info(matcher.group(0));
-            String ebitOut =  matcher.group(0);
-            ebitPattern = Pattern.compile("(\\s*<td class=\"ZAHL\">(((?!</).)*)</td>\\s*)");
-            matcher = ebitPattern.matcher(ebitOut);
             while (matcher.find()) {
-                log.debug(matcher.group(2));
-                ebitArray.add(matcher.group(2).trim());
+                log.info("Matches gefunden!");
+
+                log.info(matcher.group(0));
+                String ebitOut = matcher.group(0);
+                ebitPattern = Pattern.compile("(\\s*<td class=\"ZAHL\">(((?!</).)*)</td>\\s*)");
+                matcher = ebitPattern.matcher(ebitOut);
+                while (matcher.find()) {
+                    log.debug(matcher.group(2));
+                    ebitArray.add(matcher.group(2).trim());
+                }
             }
+
+            log.info(ebitArray.toString());
+
+            if (profitabilityYears.size() != ebitArray.size()) {
+                throw new RuntimeException("ebitArray und profitabilityYears sind nicht gleich gross");
+            }
+
+            Map<String, String> ebitMap = new HashMap<>();
+            for (int i = 0; i < profitabilityYears.size(); i++) {
+                ebitMap.put(profitabilityYears.get(i), ebitArray.get(i));
+            }
+
+            log.info(ebitMap.get("Ebit last year: " + fundamentalData.getLastYear()));
+
+            String ebit = ebitMap.get(fundamentalData.getLastYear());
+            if (ebit == null) {
+                log.info("Trying " + fundamentalData.getLastYear() + "e as last year...");
+                ebit = ebitMap.get(fundamentalData.getLastYear() + "e");
+                if (ebit == null) {
+                    log.info(ebitMap.get("Ebit two years ago: " + fundamentalData.getTwoYearsAgo()));
+                    ebit = ebitMap.get(fundamentalData.getTwoYearsAgo());
+                }
+            }
+            return Double.parseDouble(ebit.replace("%", "").replace(",", "."));
         }
-
-        log.info(ebitArray.toString());
-
-        if (profitabilityYears.size() != ebitArray.size()) {
-            throw new RuntimeException("ebitArray und profitabilityYears sind nicht gleich gross");
-        }
-
-        Map<String, String> ebitMap = new HashMap<>();
-        for (int i = 0; i < profitabilityYears.size(); i++) {
-            ebitMap.put(profitabilityYears.get(i), ebitArray.get(i));
-        }
-
-        log.info(ebitMap.get("Ebit last year: " + fundamentalData.getLastYear()));
-
-        String ebit = ebitMap.get(fundamentalData.getLastYear());
-        if (ebit == null) {
-            log.info(ebitMap.get("Ebit two years ago: " + fundamentalData.getTwoYearsAgo()));
-            ebit = ebitMap.get(fundamentalData.getTwoYearsAgo());
-        }
-        return Double.parseDouble(ebit.replace("%", "").replace(",", "."));
     }
 
 
@@ -485,8 +507,12 @@ public class OnVistaParser {
 
         String equityRatio = equityRatioMap.get(fundamentalData.getLastYear());
         if (equityRatio == null) {
-            log.info("equity ratio two years ago: " + equityRatioMap.get(fundamentalData.getLastYear()));
-            equityRatio = equityRatioMap.get(fundamentalData.getTwoYearsAgo());
+            log.info("Trying " + fundamentalData.getLastYear() + "e as last year...");
+            equityRatio = equityRatioMap.get(fundamentalData.getLastYear() + "e");
+            if (equityRatio == null) {
+                log.info("equity ratio two years ago: " + equityRatioMap.get(fundamentalData.getLastYear()));
+                equityRatio = equityRatioMap.get(fundamentalData.getTwoYearsAgo());
+            }
         }
         return Double.parseDouble(equityRatio.replace("%", "").replace(",", "."));
     }
@@ -501,7 +527,12 @@ public class OnVistaParser {
     private double calculatePer5years(double currentRate, Map<String, String> earningsPerShare) {
         double next = Double.parseDouble(earningsPerShare.get(fundamentalData.getNextYear()).replace(",", "."));
         double current = Double.parseDouble(earningsPerShare.get(fundamentalData.getCurrentYear()).replace(",", "."));
-        double last = Double.parseDouble(earningsPerShare.get(fundamentalData.getLastYear()).replace(",", "."));
+        // If the data is not up to date at onvista...
+        String lastYearEps = earningsPerShare.get(fundamentalData.getLastYear());
+        if (lastYearEps == null) {
+            lastYearEps = earningsPerShare.get(fundamentalData.getLastYear() + "e");
+        }
+        double last = Double.parseDouble(lastYearEps.replace(",", "."));
         double twoAgo = Double.parseDouble(earningsPerShare.get(fundamentalData.getTwoYearsAgo()).replace(",", "."));
         double threeAgo = Double.parseDouble(earningsPerShare.get(fundamentalData.getThreeYearsAgo()).replace(",", "."));
 

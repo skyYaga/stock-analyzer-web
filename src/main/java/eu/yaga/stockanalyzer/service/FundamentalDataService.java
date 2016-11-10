@@ -15,6 +15,5 @@ public interface FundamentalDataService {
      * @param symbol Symbol of the stock
      * @return fundamental data
      */
-    FundamentalData getFundamentalData(String symbol);
-
+    FundamentalData getFundamentalData(String symbol, FundamentalData fundamentalData);
 }

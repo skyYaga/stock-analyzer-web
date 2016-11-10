@@ -147,6 +147,7 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public double getRateProgress6month(FundamentalData fundamentalData) {
+        log.info("getRateProgress6month");
         return getRateProgress(fundamentalData.getSymbol(), 6, ChronoUnit.MONTHS);
     }
 
@@ -158,6 +159,7 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public double getRateProgress1year(FundamentalData fundamentalData) {
+        log.info("getRateProgress1year");
         return getRateProgress(fundamentalData.getSymbol(), 1, ChronoUnit.YEARS);
     }
 
@@ -169,6 +171,7 @@ public class YahooHistoricalExchangeRateServiceImpl implements HistoricalExchang
      */
     @Override
     public List<Double> getReversal3Month(FundamentalData fundamentalData) {
+        log.info("getReversal3Month");
         String symbol = fundamentalData.getSymbol();
         String stockIndex = fundamentalData.getStockIndex();
 
