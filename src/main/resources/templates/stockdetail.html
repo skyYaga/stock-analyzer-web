@@ -8,6 +8,8 @@
     <h1 th:text="'Details für ' + ${fundamentalData.name} + ' (' + ${fundamentalData.symbol} + ')'"></h1>
 
     <p th:text="'Daten vom ' + ${fundamentalData.date}"></p>
+    <p th:text="'Marktkapitalisierung: ' + ${fundamentalData.marketCapitalization}"></p>
+    <p th:text="'Typ: ' + ${fundamentalData.stockType}"></p>
     <p th:text="'Index: ' + ${fundamentalData.stockIndex}"></p>
     <ul th:each="url : ${fundamentalData.urls}">
         <li><a th:href="${url}" th:text="${url}" target="_blank" rel="noopener noreferrer"></a></li>

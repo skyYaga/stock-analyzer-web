@@ -106,6 +106,7 @@ class FundamentalDataController {
             fundamentalData.setEpsNextYear(newFundamentalData.getEpsNextYear());
             fundamentalData.setPer5years(newFundamentalData.getPer5years());
             fundamentalData.setPerCurrent(newFundamentalData.getPerCurrent());
+            fundamentalData.setMarketCapitalization(newFundamentalData.getMarketCapitalization());
         } else {
             fundamentalData = newFundamentalData;
         }

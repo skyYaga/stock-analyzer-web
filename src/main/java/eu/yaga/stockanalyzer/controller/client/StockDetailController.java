@@ -73,6 +73,7 @@ class StockDetailController {
         workingFundamentalData.setEarningsRevision(fundamentalData.getEarningsRevision());
         workingFundamentalData.setName(fundamentalData.getName());
         workingFundamentalData.setUrls(fundamentalData.getUrls());
+        workingFundamentalData.setStockType(fundamentalData.getStockType());
 
         fundamentalDataRepository.save(workingFundamentalData);
 

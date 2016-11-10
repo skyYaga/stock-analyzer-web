@@ -19,6 +19,7 @@ public class FundamentalData {
     private Date date;
 
     private String symbol;
+    private StockType stockType;
     private ArrayList<String> businessYears;
     private double roe;
     private double ebit;
@@ -28,6 +29,7 @@ public class FundamentalData {
     private double epsNextYear;
     private double perCurrent;
     private double per5years;
+    private double marketCapitalization;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date lastQuarterlyFigures;
     @DateTimeFormat(pattern="yyyy-MM-dd")
@@ -455,6 +457,22 @@ public class FundamentalData {
 
     public void setUrls(List<String> urls) {
         this.urls = urls;
+    }
+
+    public StockType getStockType() {
+        return stockType;
+    }
+
+    public void setStockType(StockType stockType) {
+        this.stockType = stockType;
+    }
+
+    public double getMarketCapitalization() {
+        return marketCapitalization;
+    }
+
+    public void setMarketCapitalization(double marketCapitalization) {
+        this.marketCapitalization = marketCapitalization;
     }
 
     @Override

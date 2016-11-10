@@ -1,12 +1,18 @@
 package eu.yaga.stockanalyzer.parser;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.model.historicaldata.HistoricalDataQuote;
 import eu.yaga.stockanalyzer.service.CurrentStockQuotesService;
+import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +25,9 @@ public class OnVistaParser {
 
     @Autowired
     private CurrentStockQuotesService currentStockQuotesService;
+
+    @Autowired
+    private HistoricalExchangeRateService historicalExchangeRateService;
 
     private static final Logger log = LoggerFactory.getLogger(OnVistaParser.class);
 
@@ -54,12 +63,28 @@ public class OnVistaParser {
         // EBIT-Marge
         fundamentalData.setEbit(parseEbit(profitabilityYears));
 
+        // Marktkapitalisierung
+        fundamentalData.setMarketCapitalization(parseMarketCapitalization(profitabilityYears));
+
         // Eigenkapitalquote
         fundamentalData.setEquityRatio(parseEquityRatio(balanceSheetYears));
 
         // KGV
         Map<String, String> earningsPerShare = parseEarningsPerShare(earningYears);
         double currentRate = currentStockQuotesService.getCurrentRate(symbol);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate now = LocalDate.now();
+        while (currentRate == 0) {
+            try {
+                List<HistoricalDataQuote> historicalExchangeRates = historicalExchangeRateService.getHistoricalExchangeRates(symbol, now.minusDays(1).format(dtf), now.format(dtf));
+                if (historicalExchangeRates.size() > 0) {
+                    currentRate = historicalExchangeRates.get(0).getClose();
+                }
+                now = now.minusDays(1);
+            } catch (ParseException e) {
+                log.error(e.getLocalizedMessage());
+            }
+        }
         fundamentalData.setAsk(currentRate);
 
         // Gewinn pro Aktie
@@ -321,6 +346,59 @@ public class OnVistaParser {
             roe = roeMap.get(fundamentalData.getTwoYearsAgo());
         }
         return Double.parseDouble(roe.replace("%", "").replace(",", "."));
+    }
+
+    /**
+     * parses the market capitalization
+     * @return marketCapitalization in million euro
+     * @param profitabilityYears the available years
+     */
+    private double parseMarketCapitalization(ArrayList<String> profitabilityYears) {
+        Pattern mcPattern = Pattern.compile("<tr>\\s*<td[^/]*Marktkapitalisierung in Mio. EUR</td>((?!</tr>).)*</tr>");
+        matcher = mcPattern.matcher(html);
+        ArrayList<String> mcArray = new ArrayList<>();
+
+        while (matcher.find()) {
+            log.info("Matches gefunden!");
+
+            log.info(matcher.group(0));
+            String mcOut =  matcher.group(0);
+            mcPattern = Pattern.compile("(\\s*<td class=\"ZAHL\">(((?!</).)*)</td>\\s*)");
+            matcher = mcPattern.matcher(mcOut);
+            while (matcher.find()) {
+                log.debug(matcher.group(2));
+                mcArray.add(matcher.group(2).trim());
+            }
+        }
+
+        log.info(mcArray.toString());
+
+        if (profitabilityYears.size() != mcArray.size()) {
+            throw new RuntimeException("mcArray und profitabilityYears sind nicht gleich gross");
+        }
+
+        Map<String, String> mcMap = new HashMap<>();
+        for (int i = 0; i < profitabilityYears.size(); i++) {
+            mcMap.put(profitabilityYears.get(i), mcArray.get(i));
+        }
+
+        log.info(mcMap.get("mc last year: " + fundamentalData.getLastYear()));
+
+        String mc = mcMap.get(fundamentalData.getLastYear());
+        if (mc == null) {
+            log.info(mcMap.get("mc two years ago: " + fundamentalData.getLastYear()));
+            mc = mcMap.get(fundamentalData.getTwoYearsAgo());
+        }
+
+        NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
+        Number number = 0;
+        try {
+            number = format.parse(mc);
+        } catch (ParseException e) {
+            log.error("Failed to parse number: " + mc);
+            throw new RuntimeException("Failed to parse number: " + mc);
+        }
+        return number.doubleValue();
     }
 
     /**
