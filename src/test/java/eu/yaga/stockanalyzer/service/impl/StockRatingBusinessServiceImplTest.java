@@ -33,9 +33,9 @@ public class StockRatingBusinessServiceImplTest {
         fd.setAnalystEstimation(2.6);
         fd.setLastQuarterlyFigures(new Date());
         List<Double> reversalList = new ArrayList<>();
-        reversalList.add(1.0);
-        reversalList.add(2.0);
-        reversalList.add(3.0);
+        reversalList.add(-1.0);
+        reversalList.add(-2.0);
+        reversalList.add(-3.0);
         fd.setReversal3Month(reversalList);
         fd.setEarningsRevision(6);
 
@@ -120,9 +120,9 @@ public class StockRatingBusinessServiceImplTest {
         fd.setAnalystEstimation(1.5);
         fd.setLastQuarterlyFigures(new Date());
         List<Double> reversalList = new ArrayList<>();
-        reversalList.add(-1.0);
-        reversalList.add(-2.0);
-        reversalList.add(-3.0);
+        reversalList.add(1.0);
+        reversalList.add(2.0);
+        reversalList.add(3.0);
         fd.setReversal3Month(reversalList);
         fd.setEarningsRevision(-6);
 

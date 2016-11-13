@@ -94,10 +94,10 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
 
         switch (score) {
             case 3:
-                fd.setReversal3MonthRating(1);
+                fd.setReversal3MonthRating(-1);
                 break;
             case -3:
-                fd.setReversal3MonthRating(-1);
+                fd.setReversal3MonthRating(1);
                 break;
             default: fd.setReversal3MonthRating(0);
         }
