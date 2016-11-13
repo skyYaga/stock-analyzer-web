@@ -47,8 +47,12 @@
                 </tr>
                 <tr>
                     <td>Index</td>
-                    <td>DAX: ^GDAXI</td>
-                    <td><input type="text" th:field="*{stockIndex}" /></td>
+                    <td></td>
+                    <td>
+                        <select th:field="*{stockIndex}">
+                            <option th:each="stockIndex : ${T(eu.yaga.stockanalyzer.model.StockIndex).values()}" th:value="${stockIndex}" th:text="${stockIndex.description}"></option>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td>Letzte Quartalszahlen</td>

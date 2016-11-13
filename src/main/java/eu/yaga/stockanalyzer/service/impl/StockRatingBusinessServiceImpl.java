@@ -5,6 +5,8 @@ import eu.yaga.stockanalyzer.model.StockType;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -78,28 +80,35 @@ public class StockRatingBusinessServiceImpl implements StockRatingBusinessServic
     }
 
     private FundamentalData rateReversal3Month(FundamentalData fd) {
-        List<Double> reversal3Month = historicalExchangeRateService.getReversal3Month(fd);
-        fd.setReversal3Month(reversal3Month);
+        StockType stockType = fd.getStockType();
 
-        int score = 0;
-        if (reversal3Month != null) {
-            for (double reversal : reversal3Month) {
-                if (reversal > 0) {
-                    score++;
-                } else if (reversal < 0) {
-                    score--;
+        if (stockType.equals(StockType.MID_CAP) || stockType.equals(StockType.SMALL_CAP)) {
+            fd.setReversal3Month(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
+            fd.setReversal3MonthRating(0);
+        } else {
+            List<Double> reversal3Month = historicalExchangeRateService.getReversal3Month(fd);
+            fd.setReversal3Month(reversal3Month);
+
+            int score = 0;
+            if (reversal3Month != null) {
+                for (double reversal : reversal3Month) {
+                    if (reversal > 0) {
+                        score++;
+                    } else if (reversal < 0) {
+                        score--;
+                    }
                 }
             }
-        }
 
-        switch (score) {
-            case 3:
-                fd.setReversal3MonthRating(-1);
-                break;
-            case -3:
-                fd.setReversal3MonthRating(1);
-                break;
-            default: fd.setReversal3MonthRating(0);
+            switch (score) {
+                case 3:
+                    fd.setReversal3MonthRating(-1);
+                    break;
+                case -3:
+                    fd.setReversal3MonthRating(1);
+                    break;
+                default: fd.setReversal3MonthRating(0);
+            }
         }
 
         return fd;

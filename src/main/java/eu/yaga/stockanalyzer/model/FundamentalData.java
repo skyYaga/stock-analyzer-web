@@ -34,7 +34,7 @@ public class FundamentalData {
     private Date lastQuarterlyFigures;
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date nextQuarterlyFigures;
-    private String stockIndex;
+    private StockIndex stockIndex;
     private double rateProgress6month;
     private double rateProgress1year;
     private List<Double> reversal3Month;
@@ -347,11 +347,11 @@ public class FundamentalData {
         this.nextQuarterlyFigures = nextQuarterlyFigures;
     }
 
-    public String getStockIndex() {
+    public StockIndex getStockIndex() {
         return stockIndex;
     }
 
-    public void setStockIndex(String stockIndex) {
+    public void setStockIndex(StockIndex stockIndex) {
         this.stockIndex = stockIndex;
     }
 
