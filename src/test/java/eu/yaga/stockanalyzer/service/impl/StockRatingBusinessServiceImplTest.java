@@ -1,8 +1,10 @@
 package eu.yaga.stockanalyzer.service.impl;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.model.StockType;
 import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,11 +20,16 @@ import static org.mockito.Mockito.when;
 public class StockRatingBusinessServiceImplTest {
 
     private StockRatingBusinessServiceImpl service;
+    private FundamentalData fd;
+
+    @Before
+    public void setUp() {
+        fd = new FundamentalData();
+        fd.setStockType(StockType.LARGE_CAP);
+    }
 
     @Test
     public void testGoodRating() {
-
-        FundamentalData fd = new FundamentalData();
         fd.setRoe(21);
         fd.setEbit(13);
         fd.setEquityRatio(26);
@@ -62,7 +69,6 @@ public class StockRatingBusinessServiceImplTest {
 
     @Test
     public void testNeutralRating() {
-        FundamentalData fd = new FundamentalData();
         fd.setRoe(15);
         fd.setEbit(9);
         fd.setEquityRatio(20);
@@ -109,7 +115,6 @@ public class StockRatingBusinessServiceImplTest {
 
     @Test
     public void testBadRating() {
-        FundamentalData fd = new FundamentalData();
         fd.setRoe(9);
         fd.setEbit(5);
         fd.setEquityRatio(14);
@@ -149,8 +154,6 @@ public class StockRatingBusinessServiceImplTest {
 
     @Test
     public void testGoodRateMomentumRating() {
-        FundamentalData fd = new FundamentalData();
-
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getRateProgress6month(fd)).thenReturn(6.0);
         when(mockedRateService.getRateProgress1year(fd)).thenReturn(0.0);
@@ -163,8 +166,6 @@ public class StockRatingBusinessServiceImplTest {
 
     @Test
     public void testBadRateMomentumRating() {
-        FundamentalData fd = new FundamentalData();
-
         HistoricalExchangeRateService mockedRateService = mock(HistoricalExchangeRateService.class);
         when(mockedRateService.getRateProgress6month(fd)).thenReturn(-6.0);
         when(mockedRateService.getRateProgress1year(fd)).thenReturn(0.0);
