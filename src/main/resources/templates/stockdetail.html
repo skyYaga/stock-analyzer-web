@@ -61,7 +61,8 @@
             </tr>
             <tr>
                 <td>Reaktion auf Quartalszahlen</td>
-                <td th:text="'Nächste Quartalszahlen: ' + ${fundamentalData.nextQuarterlyFigures}"></td>
+                <td th:if="${fundamentalData.nextQuarterlyFigures != null}" th:text="'Nächste Quartalszahlen: ' + ${fundamentalData.nextQuarterlyFigures}"></td>
+                <td th:if="${fundamentalData.nextQuarterlyFigures == null}" th:text="'Nächste Quartalszahlen: -'"></td>
                 <td th:text="${fundamentalData.lastQuarterlyFigures}?${#dates.format(fundamentalData.lastQuarterlyFigures, 'dd.MM.yyyy')}"></td>
                 <td th:text="${fundamentalData.lastQuarterlyFiguresRating}"></td>
             </tr>

@@ -8,6 +8,7 @@ import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -53,16 +54,17 @@ class FundamentalDataController {
      * @return stock symbols
      */
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public HashSet<FundamentalData> getCachedSymbols() throws ParseException {
+    public LinkedHashSet<FundamentalData> getCachedSymbols() throws ParseException {
         Query query = new Query();
         query.fields().include("symbol");
+        query.with(new Sort(new Sort.Order(Sort.Direction.ASC, "symbol")));
         List<FundamentalData> fundamentalDataList = mongoTemplate.find(query, FundamentalData.class);
-        HashSet<String> symbols = new HashSet<>();
+        LinkedHashSet<String> symbols = new LinkedHashSet<>();
         for (FundamentalData data : fundamentalDataList) {
             symbols.add(data.getSymbol());
         }
 
-        HashSet<FundamentalData> sortedFundamentalDataList = new HashSet<>();
+        LinkedHashSet<FundamentalData> sortedFundamentalDataList = new LinkedHashSet<>();
         for (String symbol : symbols) {
             sortedFundamentalDataList.add(fundamentalDataRepository.findBySymbolOrderByDateDesc(symbol));
         }
