@@ -8,7 +8,7 @@
     <title>Details</title>
 
     <!-- Bootstrap -->
-    <link href="../static/css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" rel="stylesheet" />
+    <link href="../../static/css/bootstrap.min.css" th:href="@{~/css/bootstrap.min.css}" rel="stylesheet" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -129,14 +129,14 @@
             </tbody>
         </table>
 
-        <p><a th:text="${fundamentalData.symbol} + ' bearbeiten'" th:href="'/stockdetail/edit?symbol=' + ${fundamentalData.symbol}"></a></p>
-        <p><a th:text="${fundamentalData.symbol} + ' neu bewerten'" th:href="'/stockdetail/rate?symbol=' + ${fundamentalData.symbol}"></a></p>
+        <p><a th:text="${fundamentalData.symbol} + ' bearbeiten'" th:href="'/stockdetail/edit/' + ${fundamentalData.symbol}"></a></p>
+        <p><a th:text="${fundamentalData.symbol} + ' neu bewerten'" th:href="'/stockdetail/rate/' + ${fundamentalData.symbol}"></a></p>
         <p><a href="/overview">Zurück zur Übersicht</a></p>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="../static/js/jquery.min.js" th:src="@{js/jquery.min.js}"></script>
+    <script src="../../static/js/jquery.min.js" th:src="@{~/js/jquery.min.js}"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../static/js/bootstrap.min.js" th:src="@{js/bootstrap.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{~/js/bootstrap.min.js}"></script>
 </body>
 </html>

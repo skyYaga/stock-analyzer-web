@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +28,8 @@ class StockDetailController {
     @Autowired
     private StockRatingBusinessService stockRatingBusinessService;
 
-    @RequestMapping(value = "/stockdetail", method = RequestMethod.GET)
-    public String stock(@RequestParam(value = "symbol") String symbol, Model model) {
+    @RequestMapping(value = "/stockdetail/{symbol:.+}", method = RequestMethod.GET)
+    public String stock(@PathVariable String symbol, Model model) {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -43,15 +40,20 @@ class StockDetailController {
         return "stockdetail";
     }
 
-    @RequestMapping(value = "/stockdetail/edit", method = RequestMethod.GET)
-    public String editStock(@RequestParam(value = "symbol", required = false) String symbol, Model model) {
+    @RequestMapping(value = "/stockdetail/edit/new", method = RequestMethod.GET)
+    public String newStock(Model model) {
         FundamentalData fundamentalData = new FundamentalData();
-        if (symbol != null) {
-            model.addAttribute("symbol", symbol);
+        model.addAttribute("fundamentalData", fundamentalData);
 
-            RestTemplate restTemplate = new RestTemplate();
-            fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
-        }
+        return "edit-stockdetail";
+    }
+
+    @RequestMapping(value = "/stockdetail/edit/{symbol:.+}", method = RequestMethod.GET)
+    public String editStock(@PathVariable String symbol, Model model) {
+        model.addAttribute("symbol", symbol);
+
+        RestTemplate restTemplate = new RestTemplate();
+        FundamentalData fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
 
         model.addAttribute("fundamentalData", fundamentalData);
 
@@ -79,7 +81,7 @@ class StockDetailController {
 
         model.addAttribute("fundamentalData", workingFundamentalData);
 
-        return "stockdetail";
+        return "redirect:/stockdetail/" + workingFundamentalData.getSymbol();
     }
 
     @RequestMapping(value="/stockdetail/edit", params={"addURL"})
@@ -97,8 +99,8 @@ class StockDetailController {
         return "edit-stockdetail";
     }
 
-    @RequestMapping(value = "/stockdetail/rate", method = RequestMethod.GET)
-    public String rateStock(@RequestParam(value = "symbol") String symbol, Model model) {
+    @RequestMapping(value = "/stockdetail/rate/{symbol:.+}", method = RequestMethod.GET)
+    public String rateStock(@PathVariable String symbol, Model model) {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
@@ -106,11 +108,11 @@ class StockDetailController {
 
         model.addAttribute("fundamentalData", fundamentalData);
 
-        return "stockdetail";
+        return "redirect:/stockdetail/" + symbol;
     }
 
-    @RequestMapping(value = "/stockdetail/delete")
-    public String deleteStock(@RequestParam(value = "symbol") String symbol, Model model) {
+    @RequestMapping(value = "/stockdetail/delete/{symbol:.+}")
+    public String deleteStock(@PathVariable String symbol, Model model) {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
