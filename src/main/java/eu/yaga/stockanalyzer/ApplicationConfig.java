@@ -1,14 +1,8 @@
 package eu.yaga.stockanalyzer;
 
 import eu.yaga.stockanalyzer.parser.OnVistaParser;
-import eu.yaga.stockanalyzer.service.CurrentStockQuotesService;
-import eu.yaga.stockanalyzer.service.FundamentalDataService;
-import eu.yaga.stockanalyzer.service.HistoricalExchangeRateService;
-import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
-import eu.yaga.stockanalyzer.service.impl.StockRatingBusinessServiceImpl;
-import eu.yaga.stockanalyzer.service.impl.YahooCurrentStockQuotesServiceImpl;
-import eu.yaga.stockanalyzer.service.impl.YahooHistoricalExchangeRateServiceImpl;
-import eu.yaga.stockanalyzer.service.impl.OnVistaFundamentalDataServiceImpl;
+import eu.yaga.stockanalyzer.service.*;
+import eu.yaga.stockanalyzer.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,5 +43,10 @@ public class ApplicationConfig {
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public EmailService getEmailService() {
+        return new MailjetEmailServiceImpl();
     }
 }
