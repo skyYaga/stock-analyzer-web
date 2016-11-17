@@ -20,7 +20,7 @@ public class FundamentalData {
 
     private String symbol;
     private StockType stockType;
-    private ArrayList<String> businessYears;
+    private ArrayList<String> businessYears = new ArrayList<>();
     private double roe;
     private double ebit;
     private double equityRatio;
@@ -224,7 +224,10 @@ public class FundamentalData {
      * @return year
      */
     public String getNextYear() {
-        return businessYears.get(0);
+        if (businessYears.size() > 0) {
+            return businessYears.get(0);
+        }
+        return "";
     }
 
     /**
@@ -232,7 +235,10 @@ public class FundamentalData {
      * @return year
      */
     public String getCurrentYear() {
-        return businessYears.get(1);
+        if (businessYears.size() > 1) {
+            return businessYears.get(1);
+        }
+        return "";
     }
 
     /**
@@ -240,7 +246,10 @@ public class FundamentalData {
      * @return year
      */
     public String getLastYear() {
-        return businessYears.get(2);
+        if (businessYears.size() > 2) {
+            return businessYears.get(2);
+        }
+        return "";
     }
 
     /**
@@ -248,7 +257,10 @@ public class FundamentalData {
      * @return year
      */
     public String getTwoYearsAgo() {
-        return businessYears.get(3);
+        if (businessYears.size() > 3) {
+            return businessYears.get(3);
+        }
+        return "";
     }
 
     /**
@@ -256,7 +268,10 @@ public class FundamentalData {
      * @return year
      */
     public String getThreeYearsAgo() {
-        return businessYears.get(4);
+        if (businessYears.size() > 4) {
+            return businessYears.get(4);
+        }
+        return "";
     }
 
     public int getOverallRating() {

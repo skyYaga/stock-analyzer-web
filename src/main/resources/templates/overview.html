@@ -22,7 +22,7 @@
     <div class="container">
         <h1>Verfügbare Aktien</h1>
         <p><a href="/stockdetail/edit/new">Neue Aktie hinzufügen</a></p>
-        <table id="overview_table" class="table table-striped table-hover">
+        <table id="overview_table" class="table table-condensed table-striped table-hover">
             <thead>
                 <th>Symbol</th>
                 <th>Name</th>
@@ -38,10 +38,10 @@
                     <td><a th:text="${data.symbol}" th:href="'/stockdetail/' + ${data.symbol}"></a></td>
                     <td th:text="${data.name}"></td>
 
-                    <td th:if="${data.lastQuarterlyFigures != null}" th:text="${#dates.format(data.lastQuarterlyFigures, 'dd.MM.yyyy')}"></td>
+                    <td th:if="${data.lastQuarterlyFigures != null}" th:text="${#dates.format(data.lastQuarterlyFigures, 'yyyy-MM-dd')}"></td>
                     <td th:if="${data.lastQuarterlyFigures == null}" th:text="${'-'}"></td>
 
-                    <td th:if="${data.nextQuarterlyFigures != null}" th:text="${#dates.format(data.nextQuarterlyFigures, 'dd.MM.yyyy')}"></td>
+                    <td th:if="${data.nextQuarterlyFigures != null}" th:text="${#dates.format(data.nextQuarterlyFigures, 'yyyy-MM-dd')}"></td>
                     <td th:if="${data.nextQuarterlyFigures == null}" th:text="${'-'}"></td>
 
                     <td th:text="${data.stockIndex}"></td>
