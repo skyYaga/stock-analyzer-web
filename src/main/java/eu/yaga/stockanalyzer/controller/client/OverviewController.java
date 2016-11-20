@@ -14,10 +14,12 @@ import java.util.LinkedHashSet;
 @Controller
 public class OverviewController {
 
+    private static final String API_URL = "http://localhost:8081/api/";
+
     @RequestMapping({"/", "/overview"})
     public String overview(Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        LinkedHashSet<FundamentalData> fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data", LinkedHashSet.class);
+        LinkedHashSet<FundamentalData> fundamentalData = restTemplate.getForObject(API_URL + "fundamental-data/", LinkedHashSet.class);
 
         model.addAttribute("fundamentalData", fundamentalData);
 

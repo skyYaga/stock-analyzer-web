@@ -29,7 +29,7 @@ public class Application implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         MongoUser user = new MongoUser("foo", "bar", "ROLE_USER");
         try {
-            MongoUser mongoUser = userDetailsService.registerNewAccount(user);
+            userDetailsService.registerNewAccount(user);
         } catch (UsernameExistsException e) {
             log.info(e.getLocalizedMessage());
         }

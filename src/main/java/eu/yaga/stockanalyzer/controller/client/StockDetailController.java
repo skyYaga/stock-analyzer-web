@@ -1,11 +1,8 @@
 package eu.yaga.stockanalyzer.controller.client;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
-import eu.yaga.stockanalyzer.repository.FundamentalDataRepository;
-import eu.yaga.stockanalyzer.service.StockRatingBusinessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,19 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 class StockDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(StockDetailController.class);
-
-    @Autowired
-    private FundamentalDataRepository fundamentalDataRepository;
-
-    @Autowired
-    private StockRatingBusinessService stockRatingBusinessService;
+    private static final String API_URL = "http://localhost:8081/api/";
 
     @RequestMapping(value = "/stockdetail/{symbol:.+}", method = RequestMethod.GET)
     public String stock(@PathVariable String symbol, Model model) {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
-        FundamentalData fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
+        FundamentalData fundamentalData = restTemplate.getForObject(API_URL + "fundamental-data/" + symbol, FundamentalData.class);
 
         model.addAttribute("fundamentalData", fundamentalData);
 
@@ -56,7 +48,7 @@ class StockDetailController {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
-        FundamentalData fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol, FundamentalData.class);
+        FundamentalData fundamentalData = restTemplate.getForObject(API_URL + "fundamental-data/" + symbol, FundamentalData.class);
 
         model.addAttribute("fundamentalData", fundamentalData);
 
@@ -66,7 +58,8 @@ class StockDetailController {
     @RequestMapping(value = "/stockdetail/edit", params={"stockSubmit"})
     public String stockSubmit(@ModelAttribute FundamentalData fundamentalData, Model model) {
         log.info("in stockSubmit");
-        FundamentalData workingFundamentalData = fundamentalDataRepository.findBySymbolOrderByDateDesc(fundamentalData.getSymbol());
+        RestTemplate restTemplate = new RestTemplate();
+        FundamentalData workingFundamentalData = restTemplate.getForObject(API_URL + "fundamental-data/" + fundamentalData.getSymbol(), FundamentalData.class);
         if (workingFundamentalData == null) {
             workingFundamentalData = new FundamentalData();
             workingFundamentalData.setSymbol(fundamentalData.getSymbol());
@@ -80,7 +73,7 @@ class StockDetailController {
         workingFundamentalData.setUrls(fundamentalData.getUrls());
         workingFundamentalData.setStockType(fundamentalData.getStockType());
 
-        fundamentalDataRepository.save(workingFundamentalData);
+        restTemplate.postForObject(API_URL + "fundamental-data/", workingFundamentalData, FundamentalData.class);
 
         model.addAttribute("fundamentalData", workingFundamentalData);
 
@@ -107,7 +100,7 @@ class StockDetailController {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
-        FundamentalData fundamentalData = restTemplate.getForObject("http://localhost:8080/api/fundamental-data/" + symbol + "/refresh", FundamentalData.class);
+        FundamentalData fundamentalData = restTemplate.getForObject(API_URL + "fundamental-data/" + symbol + "/refresh", FundamentalData.class);
 
         model.addAttribute("fundamentalData", fundamentalData);
 
@@ -119,7 +112,7 @@ class StockDetailController {
         model.addAttribute("symbol", symbol);
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete("http://localhost:8080/api/fundamental-data/" + symbol + "/delete");
+        restTemplate.delete(API_URL + "fundamental-data/" + symbol + "/delete");
 
         return "redirect:/overview";
     }

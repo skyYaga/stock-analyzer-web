@@ -1,5 +1,5 @@
-# stock-analyzer-rest
-[![Build Status](https://travis-ci.org/skyYaga/stock-analyzer-rest.svg?branch=master)](https://travis-ci.org/skyYaga/stock-analyzer-rest)
+# stock-analyzer-web
+[![Build Status](https://travis-ci.org/skyYaga/stock-analyzer-web.svg?branch=master)](https://travis-ci.org/skyYaga/stock-analyzer-web)
 
-Spring Boot REST server for stock analysis
+Spring Boot web client for stock analysis
 

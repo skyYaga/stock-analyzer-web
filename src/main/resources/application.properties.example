@@ -1,7 +1,2 @@
 #logging.level.org.springframework.web=DEBUG
 spring.data.mongodb.uri=mongodb://localhost:27017/stockanalyzer
-email.mjApikeyPublic=
-email.mjApikeyPrivate=
-email.fromEmail=
-email.fromName=
-email.listRecipient[0]=
