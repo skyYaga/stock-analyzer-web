@@ -1,8 +1,6 @@
 package eu.yaga.stockanalyzer;
 
 import eu.yaga.stockanalyzer.config.MongoUserDetailsService;
-import eu.yaga.stockanalyzer.exception.UsernameExistsException;
-import eu.yaga.stockanalyzer.model.MongoUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,5 @@ public class Application implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... strings) throws Exception {
-        MongoUser user = new MongoUser("foo", "bar", "ROLE_USER");
-        try {
-            userDetailsService.registerNewAccount(user);
-        } catch (UsernameExistsException e) {
-            log.info(e.getLocalizedMessage());
-        }
-
-    }
+    public void run(String... strings) throws Exception { }
 }
