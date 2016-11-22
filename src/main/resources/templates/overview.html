@@ -43,7 +43,10 @@
                     <td th:if="${data.nextQuarterlyFigures == null}" th:text="${'-'}"></td>
 
                     <td th:text="${data.stockIndex}"></td>
-                    <td th:text="${#dates.format(data.date, 'dd.MM.yyyy')}"></td>
+
+                    <td th:if="${data.date != null}" th:text="${#dates.format(data.date, 'dd.MM.yyyy')}"></td>
+                    <td th:if="${data.date == null}" th:text="${'-'}"></td>
+
                     <td th:text="${data.overallRating}"></td>
                     <td><a th:text="Löschen" th:href="'/stockdetail/delete/' + ${data.symbol}"></a></td>
                 </tr>
