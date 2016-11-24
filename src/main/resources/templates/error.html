@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head th:include="layout :: header(title='Error', datatables=${false})">
+    <title>Error</title>
+</head>
+<body>
+    <div class="container">
+
+        <div th:substituteby="overview::logout"></div>
+        <h1>Uuuuuups... Da ist wohl was schiefgelaufen!</h1>
+
+        <!--  As we are using Thymeleaf, you might consider using
+              ${#httpServletRequest.requestURL}. But that returns the path
+              to this error page.  Hence we explicitly add the url to the
+              Model in some of the example code. -->
+        <p th:if="${url}">
+            <b>Page:</b> <span th:text="${url}">Page URL</span>
+        </p>
+
+        <p th:if="${timestamp}" id='created'>
+            <b>Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
+        </p>
+
+        <p th:if="${status}">
+            <b>Response Status:</b> <span th:text="${status}">status-code</span> <span
+                th:if="${error}" th:text="'('+${error}+')'">error ...</span>
+        </p>
+
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                <h3 class="panel-title">Stacktrace</h3>
+            </div>
+            <div class="panel-body">
+                <div  th:if="${url}" th:utext="'Failed URL: ' +  ${url}">${url}</div>
+                <div th:if="${exception}" th:utext="'Exception: ' + ${exception.message}">${exception.message}</div>
+                <ul th:if="${exception}">
+                    <li th:each="ste : ${exception.stackTrace}">
+                        <span th:utext="${ste}">${ste}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</body>
+<footer th:include="layout :: footer(datatables=${false}, analystRatingCalculator=${false})"></footer>
+</html>
