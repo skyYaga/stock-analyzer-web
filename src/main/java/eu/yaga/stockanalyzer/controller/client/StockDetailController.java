@@ -1,6 +1,7 @@
 package eu.yaga.stockanalyzer.controller.client;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
+import eu.yaga.stockanalyzer.model.FundamentalDataUrl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -80,7 +81,7 @@ class StockDetailController {
 
     @RequestMapping(value="/stockdetail/edit", params={"addURL"})
     public String addURL(final FundamentalData fundamentalData, final BindingResult bindingResult) {
-        fundamentalData.getUrls().add("");
+        fundamentalData.getUrls().add(new FundamentalDataUrl());
         return "edit-stockdetail";
     }
 

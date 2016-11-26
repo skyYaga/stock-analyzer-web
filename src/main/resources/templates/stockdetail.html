@@ -15,7 +15,10 @@
         <p th:text="'Typ: ' + ${fundamentalData.stockType}"></p>
         <p th:text="'Index: ' + ${fundamentalData.stockIndex.description}"></p>
         <ul th:each="url : ${fundamentalData.urls}">
-            <li><a th:href="${url}" th:text="${url}" target="_blank" rel="noopener noreferrer"></a></li>
+            <li>
+                <span th:text="${url.type}"></span>
+                <a th:href="${url.url}" th:text="${url.url}" target="_blank" rel="noopener noreferrer"></a>
+            </li>
         </ul>
 
         <table class="table table-striped table-hover">

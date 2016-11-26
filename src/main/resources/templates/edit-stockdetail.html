@@ -25,10 +25,7 @@
                                 <td>Symbol</td>
                                 <td></td>
                                 <td>
-                                    <input th:if="${fundamentalData.symbol != null}" type="text"
-                                           th:value="${fundamentalData.symbol}" th:field="*{symbol}" readonly="readonly" />
-                                    <input th:if="${fundamentalData.symbol == null}" type="text"
-                                           th:value="${fundamentalData.symbol}" th:field="*{symbol}" />
+                                    <input type="text" th:value="${fundamentalData.symbol}" th:field="*{symbol}" />
                                 </td>
                             </tr>
                             <tr>
@@ -89,7 +86,14 @@
                         <tr th:each="url,urlStat : *{urls}">
                             <td th:text="${urlStat.count}">1</td>
                             <td>
-                                <input type="text" th:field="*{urls[__${urlStat.index}__]}" />
+                                <select th:field="*{urls[__${urlStat.index}__].type}" >
+                                    <option th:each="urlType : ${T(eu.yaga.stockanalyzer.model.FundamentalDataUrlType).values()}"
+                                            th:value="${urlType}"
+                                            th:text="${urlType}"></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" th:field="*{urls[__${urlStat.index}__].url}" />
                             </td>
                             <td>
                                 <button type="submit" name="removeURL"

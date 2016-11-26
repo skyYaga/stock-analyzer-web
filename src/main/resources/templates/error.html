@@ -32,8 +32,8 @@
             </div>
             <div class="panel-body">
                 <div  th:if="${url}" th:utext="'Failed URL: ' +  ${url}">${url}</div>
-                <div th:if="${exception}" th:utext="'Exception: ' + ${exception.message}">${exception.message}</div>
-                <ul th:if="${exception}">
+                <div th:if="${exception.message}" th:utext="'Exception: ' + ${exception.message}">${exception.message}</div>
+                <ul th:if="${exception.stackTrace}">
                     <li th:each="ste : ${exception.stackTrace}">
                         <span th:utext="${ste}">${ste}</span>
                     </li>
