@@ -2,6 +2,7 @@ package eu.yaga.stockanalyzer.controller.client;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.model.FundamentalDataUrl;
+import eu.yaga.stockanalyzer.model.StockType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,8 @@ class StockDetailController {
     @RequestMapping(value = "/stockdetail/edit/new", method = RequestMethod.GET)
     public String newStock(Model model) {
         FundamentalData fundamentalData = new FundamentalData();
+        fundamentalData.setAnalystEstimation(2);
+        fundamentalData.setStockType(StockType.LARGE_CAP);
         model.addAttribute("fundamentalData", fundamentalData);
 
         return "edit-stockdetail";
