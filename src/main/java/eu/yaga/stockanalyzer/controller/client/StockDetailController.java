@@ -74,6 +74,7 @@ class StockDetailController {
         workingFundamentalData.setName(fundamentalData.getName());
         workingFundamentalData.setUrls(fundamentalData.getUrls());
         workingFundamentalData.setStockType(fundamentalData.getStockType());
+        workingFundamentalData.setAutomaticRating(true);
 
         restTemplate.postForObject(API_URL + "fundamental-data/", workingFundamentalData, FundamentalData.class);
 
