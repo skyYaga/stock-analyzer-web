@@ -22,6 +22,7 @@
         <p><a href="/stockdetail/edit/new">Neue Aktie hinzufügen</a></p>
         <table id="overview_table" class="table table-condensed table-striped table-hover">
             <thead>
+                <th>Flags</th>
                 <th>Symbol</th>
                 <th>Name</th>
                 <th>letzte Quartalszahlen</th>
@@ -33,6 +34,9 @@
             </thead>
             <tbody>
                 <tr th:each="data : ${fundamentalData}">
+                    <td th:if="${!data.automaticRating}"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span></td>
+                    <td th:if="${data.automaticRating}" th:text="${''}"></td>
+
                     <td><a th:text="${data.symbol}" th:href="'/stockdetail/' + ${data.symbol}"></a></td>
                     <td th:text="${data.name}"></td>
 
