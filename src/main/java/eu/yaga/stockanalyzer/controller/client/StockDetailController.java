@@ -67,6 +67,7 @@ class StockDetailController {
             workingFundamentalData.setSymbol(fundamentalData.getSymbol());
         }
         workingFundamentalData.setAnalystEstimation(fundamentalData.getAnalystEstimation());
+        workingFundamentalData.setAnalystEstimationCount(fundamentalData.getAnalystEstimationCount());
         workingFundamentalData.setStockIndex(fundamentalData.getStockIndex());
         workingFundamentalData.setLastQuarterlyFigures(fundamentalData.getLastQuarterlyFigures());
         workingFundamentalData.setNextQuarterlyFigures(fundamentalData.getNextQuarterlyFigures());
