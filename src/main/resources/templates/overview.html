@@ -58,7 +58,16 @@
                     <td th:if="${!data.automaticRating}"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span></td>
                     <td th:if="${data.automaticRating}" th:text="${''}"></td>
 
-                    <td><a th:text="Löschen" th:href="'/stockdetail/delete/' + ${data.symbol}"></a></td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Aktionen">
+                            <a class="btn btn-default btn-xs" role="button" th:href="'/stockdetail/delete/' + ${data.symbol}">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            </a>
+                            <a class="btn btn-default btn-xs" role="button" th:if="${!data.automaticRating}" th:href="'/stockdetail/enableratings/' + ${data.symbol}">
+                                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

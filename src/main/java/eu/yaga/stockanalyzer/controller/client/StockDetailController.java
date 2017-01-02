@@ -121,6 +121,16 @@ class StockDetailController {
         return "redirect:/overview";
     }
 
+    @RequestMapping(value = "/stockdetail/enableratings/{symbol:.+}")
+    public String enableRatings(@PathVariable String symbol, Model model) {
+        model.addAttribute("symbol", symbol);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getForObject(API_URL + "fundamental-data/" + symbol + "/enableratings", FundamentalData.class);
+
+        return "redirect:/overview";
+    }
+
     // Total control - setup a model and return the view name yourself. Or
     // consider subclassing ExceptionHandlerExceptionResolver (see below).
     @ExceptionHandler(Exception.class)
