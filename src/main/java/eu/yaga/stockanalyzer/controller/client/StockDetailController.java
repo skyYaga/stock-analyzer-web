@@ -2,6 +2,7 @@ package eu.yaga.stockanalyzer.controller.client;
 
 import eu.yaga.stockanalyzer.model.FundamentalData;
 import eu.yaga.stockanalyzer.model.FundamentalDataUrl;
+import eu.yaga.stockanalyzer.model.FundamentalDataUrlType;
 import eu.yaga.stockanalyzer.model.StockType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Page showing the detailed rating of a stock
@@ -37,9 +41,18 @@ class StockDetailController {
 
     @RequestMapping(value = "/stockdetail/edit/new", method = RequestMethod.GET)
     public String newStock(Model model) {
+        FundamentalDataUrl url1 = new FundamentalDataUrl("", FundamentalDataUrlType.EARNINGS_REVISION);
+        FundamentalDataUrl url2 = new FundamentalDataUrl("", FundamentalDataUrlType.DIBA_ANALYST_ESTIMATION);
+        FundamentalDataUrl url3 = new FundamentalDataUrl("", FundamentalDataUrlType.ONVISTA_FUNDAMENTAL_DATA);
+        FundamentalDataUrl url4 = new FundamentalDataUrl("", FundamentalDataUrlType.QUARTERLY_FIGURES);
+
+        List<FundamentalDataUrl> urlList = new ArrayList<>(Arrays.asList(url1, url2, url3, url4));
+
         FundamentalData fundamentalData = new FundamentalData();
         fundamentalData.setAnalystEstimation(2);
         fundamentalData.setStockType(StockType.LARGE_CAP);
+        fundamentalData.setUrls(urlList);
+
         model.addAttribute("fundamentalData", fundamentalData);
 
         return "edit-stockdetail";
