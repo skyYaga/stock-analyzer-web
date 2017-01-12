@@ -34,9 +34,9 @@
             </thead>
             <tbody>
                 <tr th:each="data : ${fundamentalData}" th:class="
-                        ${(data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP') and data.overallRating &gt; 6}? success :
-                        (${(data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP') and data.overallRating &lt; 5}? danger :
-                        (${data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP'}? warning :
+                        ${(data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP' or data.stockType == 'SMALL_FINANCE' or data.stockType == 'MID_FINANCE') and data.overallRating &gt; 6}? success :
+                        (${(data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP' or data.stockType == 'SMALL_FINANCE' or data.stockType == 'MID_FINANCE') and data.overallRating &lt; 5}? danger :
+                        (${data.stockType == 'SMALL_CAP' or data.stockType == 'MID_CAP' or data.stockType == 'SMALL_FINANCE' or data.stockType == 'MID_FINANCE'}? warning :
                         (${data.overallRating &gt; 3}? success :
                         (${data.overallRating &lt; 3}? danger : warning))))">
                     <td><a th:text="${data.symbol}" th:href="'/stockdetail/' + ${data.symbol}"></a></td>
