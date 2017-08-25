@@ -134,6 +134,14 @@ class StockDetailController {
         return "redirect:/overview";
     }
 
+    @RequestMapping(value = "/stockdetail/enableratings")
+    public String enableAllRatings(Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.put(API_URL + "fundamental-data/enableratings", FundamentalData.class);
+
+        return "redirect:/overview";
+    }
+
     @RequestMapping(value = "/stockdetail/enableratings/{symbol:.+}")
     public String enableRatings(@PathVariable String symbol, Model model) {
         model.addAttribute("symbol", symbol);
